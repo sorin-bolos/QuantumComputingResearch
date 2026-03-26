@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \":*)",
+      "Bash(C:UserssorinAppDataLocalProgramsPythonPython312python.exe -c \":*)",
+      "Bash(\"/c/Users/sorin/AppData/Local/Programs/Python/Python312/python.exe\" -c \":*)"
+    ]
+  }
+}
