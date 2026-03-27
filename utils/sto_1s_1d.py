@@ -6,8 +6,8 @@ from utils.arithmetic import ArithmeticOperator
 
 class Sto1S:
     """Implements the STO-1s-1d operation."""
-    def __init__(self):
-        pass
+    def __init__(self, allow_measurement):
+        self.allow_measurement = allow_measurement
 
     def get_sto_1s_1d_carthesian(self, qubit_count: int, decay_constant: float, max_range: float, center_offset: int) -> QuantumCircuit:
         # Decaying exponential state: |ψ⟩ = N · Σ e^(-a·|i|) |i⟩
@@ -17,7 +17,7 @@ class Sto1S:
 
         sto_circuit = self._sto_1s_1d_cartesian(qubit_count, scaled_constant)
 
-        arithmeticOperator = ArithmeticOperator(sto_circuit)
+        arithmeticOperator = ArithmeticOperator(sto_circuit, allow_measurement=self.allow_measurement)
         qc = arithmeticOperator.add_constant(qubit_count, center_offset)
 
         return qc

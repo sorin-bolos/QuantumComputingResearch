@@ -221,6 +221,50 @@ def sample_measurement_counts(qc, n_qubits: int, shots: int = 1024) -> dict:
     return {b: counts.get(b, 0) for b in all_basis}
 
 
+def get_ancilla_amplitudes(qc, n_data: int, sim=None) -> dict:
+    """Simulate *qc* and return the probability of each ancilla basis state.
+
+    The statevector is reshaped into blocks of shape
+    ``(2**n_anc, 2**n_data)``.  Each row is one ancilla basis state; the
+    probability of that ancilla outcome is the squared norm of its row.
+
+    Parameters
+    ----------
+    qc : QuantumCircuit
+        Circuit to simulate.
+    n_data : int
+        Number of data qubits (qubits 0 … n_data-1).  The remaining qubits
+        are treated as ancilla.
+    sim : AerSimulator, optional
+        Simulator instance to reuse.
+
+    Returns
+    -------
+    dict
+        Mapping from ancilla basis-state bitstring (MSB first) to probability.
+        Only states with non-negligible probability (> 1e-10) are included.
+    """
+    if sim is None:
+        sim = AerSimulator(method='statevector')
+
+    n_anc = qc.num_qubits - n_data
+    if n_anc <= 0:
+        return {'': 1.0}
+
+    qc_copy = qc.copy()
+    qc_copy.save_statevector()
+    sv = np.array(sim.run(qc_copy, shots=1).result().get_statevector())
+
+    sv_blocks = sv.reshape(2 ** n_anc, 2 ** n_data)
+    anc_probs = np.sum(np.abs(sv_blocks) ** 2, axis=1)
+
+    return {
+        format(i, f'0{n_anc}b'): float(prob)
+        for i, prob in enumerate(anc_probs)
+        if prob > 1e-10
+    }
+
+
 def print_measurement_counts(counts: dict, shots: int) -> None:
     """Print a text histogram of measurement counts.
 

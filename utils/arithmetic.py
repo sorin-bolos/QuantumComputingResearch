@@ -4,10 +4,11 @@ from utils.logic import LogicalOperator
 
 class ArithmeticOperator:
     """Arithmetic operators for quantum circuits."""
-    def __init__(self, circuit: QuantumCircuit, allow_measurement: bool = True):
+    def __init__(self, circuit: QuantumCircuit, allow_measurement: bool = True, optimize_t_gates: bool =True):
         self.circuit = circuit
         self.logical_op = LogicalOperator(circuit)
         self.allow_measurement = allow_measurement
+        self.optimize_t_gates = optimize_t_gates
 
     def add_constant(self, qubit_count: int, constant: int):
         add_circuit = self._add_constant(qubit_count, constant)
@@ -60,7 +61,7 @@ class ArithmeticOperator:
             qc    = QuantumCircuit(data, anc, name=f"+{int(''.join(map(str, constant_bits)), 2)}")
             clbit = None
 
-        logical_op = LogicalOperator(qc)
+        logical_op = LogicalOperator(qc, self.allow_measurement, self.optimize_t_gates)
 
         self._add_classically_controlled_X(qc, [data[0], data[1]], constant_bits[1])
         logical_op.apply_temporary_and(data[0], data[1], anc[0])
@@ -150,7 +151,7 @@ class ArithmeticOperator:
         return result
     
     def _remove_constant(self, qubit_count, constant):
-        return self._add_constant(qubit_count, constant).inverse()
+        return self._add_constant(qubit_count, 2**qubit_count - constant)
     
     def _add_constant_qft(qubit_count: int, constant: int) -> QuantumCircuit:
         from qiskit.circuit.library import QFT

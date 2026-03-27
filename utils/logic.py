@@ -1,20 +1,28 @@
-from qiskit import QuantumCircuit
+from qiskit import AncillaRegister, ClassicalRegister, QuantumCircuit, QuantumRegister
 
 class LogicalOperator:
     """Logical operators for quantum circuits."""
-    def __init__(self, circuit: QuantumCircuit):
+    def __init__(self, circuit: QuantumCircuit, allow_measurement: bool = True, optimize_t_gates: bool =True):
         self.circuit = circuit
+        self.allow_measurement = allow_measurement
+        self.optimize_t_gates = optimize_t_gates
 
     def apply_temporary_and(self, operand1: int, operand2: int, target: int):
+        if (not self.optimize_t_gates):
+            self.circuit.ccx(operand1, operand2, target)
+
         and_circuit = self._temporary_and()
         qubit_map = [operand1, operand2, target]
         self.circuit.compose(and_circuit, qubits=qubit_map, inplace=True)
 
-    def uncompute_temporary_and(self, operand1: int, operand2: int, target: int, clbit: int = None):
-        if clbit is not None:
+    def uncompute_temporary_and(self, operand1: int, operand2: int, target: int, clbit: int = 0):
+        if (not self.optimize_t_gates):
+            self.circuit.ccx(operand1, operand2, target)
+
+        if self.allow_measurement:
             uncompute_circuit = self._temporary_and_uncompute_with_measurement()
             qubit_map = [operand1, operand2, target]
-            self.circuit.compose(uncompute_circuit, qubits=qubit_map, clbits=[clbit], inplace=True)
+            self.circuit.compose(uncompute_circuit, qubits=qubit_map, inplace=True)
             return
 
         and_dagger_circuit = self._temporary_and_dagger()
@@ -75,12 +83,17 @@ class LogicalOperator:
     
     @staticmethod
     def _temporary_and_uncompute_with_measurement():
-        qc = QuantumCircuit(3, 1)
+        data = QuantumRegister(3)
+        mid   = ClassicalRegister(1, 'mid')
+        qc    = QuantumCircuit(data, mid, name="uncompute and")
+        clbit = mid[0]
+            
+        qc = QuantumCircuit(3)
+        qc.add_bits([clbit])
         operand1 = 0
         operand2 = 1
         target = 2
-        clbit = 0
-        
+
         qc.h(target)
         qc.measure(target, clbit)
         with qc.if_test((clbit, 1)):
