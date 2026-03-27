@@ -1,79 +1,65 @@
-import warnings
+"""IBM Quantum hardware executor — real-device counterpart to NoisySimulationExecutor."""
 
 from qiskit import QuantumCircuit, ClassicalRegister
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit_ibm_runtime import SamplerV2
-from qiskit_ibm_runtime.fake_provider import (
-    FakeSherbrooke,   # 127 qubits
-    FakeTorino,       # 133 qubits
-    FakeBrisbane,     # 127 qubits
-)
 
 from utils.dataclasses import CircuitStats
 
-__all__ = [
-    "NoisySimulationExecutor",
-    "FakeSherbrooke",
-    "FakeTorino",
-    "FakeBrisbane",
-]
+__all__ = ["IbmExecutor"]
 
 
-class NoisySimulationExecutor:
-    """Executes quantum circuits on a noisy IBM fake-device simulator.
+class IbmExecutor:
+    """Executes quantum circuits on real IBM Quantum hardware.
 
-    Uses ``SamplerV2`` from ``qiskit_ibm_runtime`` — the same primitive used
-    with real IBM backends — so the execution path is identical to real hardware.
-    Circuits are transpiled via ``generate_preset_pass_manager`` before execution.
+    Drop-in replacement for ``NoisySimulationExecutor`` with identical public
+    methods.  Uses ``SamplerV2`` via ``qiskit_ibm_runtime`` against a real
+    backend obtained from ``QiskitRuntimeService``.
 
     Parameters
     ----------
-    backend : fake backend, optional
-        Any ``qiskit_ibm_runtime.fake_provider.Fake*`` backend instance.
-        Defaults to ``FakeSherbrooke`` (127-qubit IBM Heron snapshot).
+    backend : IBM backend
+        A backend instance from ``QiskitRuntimeService``, e.g.::
+
+            from qiskit_ibm_runtime import QiskitRuntimeService
+            service = QiskitRuntimeService()
+            backend = service.backend("ibm_sherbrooke")
+            # or pick least-busy device:
+            backend = service.least_busy(operational=True, simulator=False)
+
     optimization_level : int, optional
         Transpiler optimisation level 0–3 (default 3).
     enable_dd : bool, optional
-        Enable Dynamical Decoupling (XY4 sequence) for error suppression.
+        Enable Dynamical Decoupling (XY4 by default) for error suppression.
         **Incompatible with dynamic circuits** (circuits containing ``if_else`` /
         mid-circuit measurements).  Default False.
     dd_sequence : str, optional
-        DD sequence type passed to ``sampler.options.dynamical_decoupling.sequence_type``.
-        Common choices: ``'XY4'`` (default), ``'XX'``, ``'XpXm'``.
+        DD sequence type: ``'XY4'`` (default), ``'XX'``, ``'XpXm'``.
     enable_twirling : bool, optional
-        Enable Pauli twirling on gates and measurements for error mitigation.
-        Has no effect in local fake-backend mode — only active on real IBM hardware.
-        Default False.
+        Enable Pauli twirling on gates and measurements.  Fully active on real
+        hardware (unlike fake backends).  Default False.
     twirling_num_randomizations : int, optional
         Number of random twirl circuits to average over (default 32).
-        Only relevant when ``enable_twirling=True``.
     enable_m3 : bool, optional
-        Enable M3 (Matrix-free Measurement Mitigation) readout error correction.
-        Calibrates against the backend's readout error rates at construction time,
-        then corrects raw counts on every ``sample_*`` call.  Works with both fake
-        backends and real IBM hardware.  Requires the ``mthree`` package
-        (``pip install mthree``).  Default False.
-
-    Available backends
-    ------------------
-    FakeSherbrooke  – 127 qubits  (default)
-    FakeBrisbane    – 127 qubits
-    FakeTorino      – 133 qubits
+        Enable M3 readout error correction.  Calibrates against the backend at
+        construction time; recalibrate periodically on real hardware as error
+        rates drift (every few hours).  Requires ``pip install mthree``.
+        Default False.
 
     Notes
     -----
-    DD and twirling are IBM runtime options.  When running against a fake backend
-    locally, twirling options are acknowledged but ignored with a warning.  DD will
-    raise an error if the circuit contains ``if_else`` operations (dynamic circuits).
+    Credentials must be saved before use::
 
-    M3 calibration runs at construction time and queries the backend's readout
-    error rates for all qubits.  On real hardware, recalibrate periodically
-    (every few hours) as error rates drift.
+        from qiskit_ibm_runtime import QiskitRuntimeService
+        QiskitRuntimeService.save_account(channel="ibm_quantum", token="MY_TOKEN")
+
+    Jobs are submitted to the IBM Quantum queue and may wait before running.
+    ``sample_*`` calls block until the job completes.
     """
 
     def __init__(
         self,
-        backend=None,
+        backend,
         optimization_level: int = 3,
         enable_dd: bool = False,
         dd_sequence: str = 'XY4',
@@ -81,10 +67,7 @@ class NoisySimulationExecutor:
         twirling_num_randomizations: int = 32,
         enable_m3: bool = False,
     ):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            self.backend = backend or FakeSherbrooke()
-
+        self.backend = backend
         self.optimization_level = optimization_level
         self.pm = generate_preset_pass_manager(
             optimization_level=optimization_level,
@@ -148,7 +131,7 @@ class NoisySimulationExecutor:
     # ── sampling ──────────────────────────────────────────────────────────────
 
     def sample_measurement_counts(self, qc, data_qubit_count: int, shots: int = 1024) -> dict:
-        """Run *qc* via SamplerV2 and return per-data-qubit counts.
+        """Submit *qc* to real hardware and return per-data-qubit counts.
 
         Only qubits 0 … data_qubit_count-1 are measured.
 
@@ -175,7 +158,7 @@ class NoisySimulationExecutor:
         return {b: counts.get(b, 0) for b in all_basis}
 
     def sample_raw_measurement_counts(self, qc, shots: int = 1024) -> dict:
-        """Run *qc* via SamplerV2 measuring all qubits.
+        """Submit *qc* to real hardware measuring all qubits.
 
         Parameters
         ----------
@@ -198,7 +181,7 @@ class NoisySimulationExecutor:
     # ── circuit statistics ────────────────────────────────────────────────────
 
     def print_circuit_stats(self, qc) -> None:
-        """Print a formatted summary of circuit statistics.
+        """Print a formatted summary of circuit statistics after transpilation.
 
         Parameters
         ----------
@@ -223,13 +206,6 @@ class NoisySimulationExecutor:
         Returns
         -------
         CircuitStats
-            num_qubits       — qubits after transpilation
-            depth            — circuit depth after transpilation
-            single_qubit_gates — rz + sx + x count
-            two_qubit_gates  — ecr count
-            t_gates_logical  — t + tdg in the original logical circuit
-                               (T gates become rz(π/4) after transpilation)
-            gate_counts      — full gate count dict after transpilation
         """
         logical_ops = qc.count_ops()
         t_gates_logical = logical_ops.get('t', 0) + logical_ops.get('tdg', 0)

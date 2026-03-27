@@ -125,7 +125,7 @@ class ArithmeticOperator:
         anc       = AncillaRegister(bit_count - 3, 'anc')
         qubit_map = [new_data[offset + i] for i in range(bit_count)] + list(anc)
 
-        if self.allow_measurement:
+        if self.allow_measurement and self.optimize_t_gates:
             # Carry the single mid-circuit classical bit into the result circuit.
             # It lives in its own named register so it never collides with any
             # classical register added later (e.g. a final measurement register).

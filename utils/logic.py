@@ -10,6 +10,7 @@ class LogicalOperator:
     def apply_temporary_and(self, operand1: int, operand2: int, target: int):
         if (not self.optimize_t_gates):
             self.circuit.ccx(operand1, operand2, target)
+            return
 
         and_circuit = self._temporary_and()
         qubit_map = [operand1, operand2, target]
@@ -18,6 +19,7 @@ class LogicalOperator:
     def uncompute_temporary_and(self, operand1: int, operand2: int, target: int):
         if (not self.optimize_t_gates):
             self.circuit.ccx(operand1, operand2, target)
+            return
 
         if self.allow_measurement:
             uncompute_circuit = self._temporary_and_uncompute_with_measurement()
