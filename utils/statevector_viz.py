@@ -44,6 +44,32 @@ def get_data_amplitudes(qc, n_qubits: int, sim=None) -> np.ndarray:
     return sv
 
 
+def get_raw_amplitudes(qc, sim=None) -> np.ndarray:
+    """Run *qc* on a statevector simulator and return the full statevector.
+
+    Unlike :func:`get_data_amplitudes`, no ancilla partitioning or
+    renormalisation is applied — the returned array covers all qubits.
+
+    Parameters
+    ----------
+    qc : QuantumCircuit
+        The circuit to simulate (must not already have a save_statevector instruction).
+    sim : AerSimulator, optional
+        Simulator instance to reuse.
+
+    Returns
+    -------
+    np.ndarray of complex
+        1-D array of length ``2**qc.num_qubits`` with the raw statevector amplitudes.
+    """
+    if sim is None:
+        sim = AerSimulator(method='statevector')
+
+    qc_copy = qc.copy()
+    qc_copy.save_statevector()
+    return np.array(sim.run(qc_copy, shots=1).result().get_statevector())
+
+
 def print_statevector(data_amps, n_qubits: int, threshold: float = 1e-6) -> None:
     """Print the non-negligible amplitudes of a statevector.
 
@@ -219,6 +245,39 @@ def sample_measurement_counts(qc, n_qubits: int, shots: int = 1024) -> dict:
     # Ensure all basis states are present (zeros for unobserved states)
     all_basis = [format(i, f'0{n_qubits}b') for i in range(2 ** n_qubits)]
     return {b: counts.get(b, 0) for b in all_basis}
+
+
+def sample_raw_measurement_counts(qc, shots: int = 1024) -> dict:
+    """Run *qc* with shot-based measurements on all qubits and return raw counts.
+
+    Parameters
+    ----------
+    qc : QuantumCircuit
+        The circuit to sample (must not already have a final measurement).
+    shots : int, optional
+        Number of measurement shots (default 1024).
+
+    Returns
+    -------
+    dict
+        Mapping from binary string (MSB first, length = qc.num_qubits) to
+        integer count. All observed basis states are present.
+    """
+    sim = AerSimulator(method='statevector')
+
+    qc_sample = qc.copy()
+    result_reg = ClassicalRegister(qc.num_qubits, 'result')
+    qc_sample.add_register(result_reg)
+    qc_sample.measure(list(range(qc.num_qubits)), result_reg)
+
+    raw_counts = sim.run(qc_sample, shots=shots).result().get_counts()
+
+    counts = {}
+    for bitstring, count in raw_counts.items():
+        data_bits = bitstring.split()[0]
+        counts[data_bits] = counts.get(data_bits, 0) + count
+
+    return counts
 
 
 def get_ancilla_amplitudes(qc, n_data: int, sim=None) -> dict:

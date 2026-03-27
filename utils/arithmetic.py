@@ -6,11 +6,13 @@ class ArithmeticOperator:
     """Arithmetic operators for quantum circuits."""
     def __init__(self, circuit: QuantumCircuit, allow_measurement: bool = True, optimize_t_gates: bool =True):
         self.circuit = circuit
-        self.logical_op = LogicalOperator(circuit)
         self.allow_measurement = allow_measurement
         self.optimize_t_gates = optimize_t_gates
 
     def add_constant(self, qubit_count: int, constant: int):
+
+        constant = constant % (2**qubit_count)
+
         add_circuit = self._add_constant(qubit_count, constant)
         n_total = add_circuit.num_qubits  # data + ancilla
         combined = QuantumCircuit(n_total)
@@ -21,16 +23,10 @@ class ArithmeticOperator:
                          clbits=list(combined.clbits), inplace=True)
         return combined
 
-    def remove_constant(self, qubit_count: int, constant: int):
-        remove_circuit = self._remove_constant(qubit_count, constant)
-        n_total = remove_circuit.num_qubits  # data + ancilla
-        combined = QuantumCircuit(n_total)
-        for creg in remove_circuit.cregs:
-            combined.add_register(creg)
-        combined.compose(self.circuit, qubits=range(qubit_count), inplace=True)
-        combined.compose(remove_circuit, qubits=range(n_total),
-                         clbits=list(combined.clbits), inplace=True)
-        return combined
+    def subtract_constant(self, qubit_count: int, constant: int):
+        constant = constant % (2**qubit_count)
+        constant = (2**qubit_count) - constant
+        return self.add_constant(qubit_count, constant)
 
     @staticmethod
     def _add_classically_controlled_X(qc: QuantumCircuit, qubits: list, bit: bool):
@@ -51,15 +47,7 @@ class ArithmeticOperator:
     def _add_constant_clean(self, constant_bits: list, qubit_count: int):
         data = QuantumRegister(qubit_count, 'data')
         anc  = AncillaRegister(qubit_count - 3, 'anc')
-
-        if self.allow_measurement:
-            # One classical bit, reused by all four uncompute calls sequentially.
-            mid   = ClassicalRegister(1, 'mid')
-            qc    = QuantumCircuit(data, anc, mid, name=f"+{int(''.join(map(str, constant_bits)), 2)}")
-            clbit = mid[0]
-        else:
-            qc    = QuantumCircuit(data, anc, name=f"+{int(''.join(map(str, constant_bits)), 2)}")
-            clbit = None
+        qc    = QuantumCircuit(data, anc, name=f"+{int(''.join(map(str, constant_bits)), 2)}")
 
         logical_op = LogicalOperator(qc, self.allow_measurement, self.optimize_t_gates)
 
@@ -87,25 +75,25 @@ class ArithmeticOperator:
         qc.cx(anc[3], data[5])
         self._add_classically_controlled_X(qc, [anc[3]], constant_bits[4])
 
-        logical_op.uncompute_temporary_and(anc[2], data[4], anc[3], clbit)
+        logical_op.uncompute_temporary_and(anc[2], data[4], anc[3])
         self._add_classically_controlled_X(qc, [anc[2]], constant_bits[4])
 
         qc.cx(anc[2], data[4])
         self._add_classically_controlled_X(qc, [anc[2]], constant_bits[3])
 
-        logical_op.uncompute_temporary_and(anc[1], data[3], anc[2], clbit)
+        logical_op.uncompute_temporary_and(anc[1], data[3], anc[2])
         self._add_classically_controlled_X(qc, [anc[1]], constant_bits[3])
 
         qc.cx(anc[1], data[3])
         self._add_classically_controlled_X(qc, [anc[1]], constant_bits[2])
 
-        logical_op.uncompute_temporary_and(anc[0], data[2], anc[1], clbit)
+        logical_op.uncompute_temporary_and(anc[0], data[2], anc[1])
         self._add_classically_controlled_X(qc, [anc[0]], constant_bits[2])
 
         qc.cx(anc[0], data[2])
         self._add_classically_controlled_X(qc, [anc[0]], constant_bits[1])
 
-        logical_op.uncompute_temporary_and(data[0], data[1], anc[0], clbit)
+        logical_op.uncompute_temporary_and(data[0], data[1], anc[0])
         self._add_classically_controlled_X(qc, [data[0]], constant_bits[0])
 
         qc.cx(data[0], data[1])
@@ -149,9 +137,6 @@ class ArithmeticOperator:
             result.compose(adderCircuit, qubits=qubit_map, inplace=True)
 
         return result
-    
-    def _remove_constant(self, qubit_count, constant):
-        return self._add_constant(qubit_count, 2**qubit_count - constant)
     
     def _add_constant_qft(qubit_count: int, constant: int) -> QuantumCircuit:
         from qiskit.circuit.library import QFT

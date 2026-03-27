@@ -15,7 +15,7 @@ class LogicalOperator:
         qubit_map = [operand1, operand2, target]
         self.circuit.compose(and_circuit, qubits=qubit_map, inplace=True)
 
-    def uncompute_temporary_and(self, operand1: int, operand2: int, target: int, clbit: int = 0):
+    def uncompute_temporary_and(self, operand1: int, operand2: int, target: int):
         if (not self.optimize_t_gates):
             self.circuit.ccx(operand1, operand2, target)
 
@@ -87,9 +87,6 @@ class LogicalOperator:
         mid   = ClassicalRegister(1, 'mid')
         qc    = QuantumCircuit(data, mid, name="uncompute and")
         clbit = mid[0]
-            
-        qc = QuantumCircuit(3)
-        qc.add_bits([clbit])
         operand1 = 0
         operand2 = 1
         target = 2
