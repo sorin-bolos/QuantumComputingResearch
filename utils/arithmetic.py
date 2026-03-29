@@ -138,7 +138,7 @@ class ArithmeticOperator:
 
         return result
     
-    def _add_constant_qft(qubit_count: int, constant: int) -> QuantumCircuit:
+    def _add_constant_qft(self, qubit_count: int, constant: int) -> QuantumCircuit:
         from qiskit.circuit.library import QFT
         import numpy as np
 
@@ -149,9 +149,11 @@ class ArithmeticOperator:
             angle = 2 * np.pi * constant / (2 ** (k + 1))
             qc.p(angle, k)          # P(θ)|0⟩=|0⟩, P(θ)|1⟩=e^{iθ}|1⟩
 
+        qc.append(QFT(qubit_count, do_swaps=False, inverse=True), range(qubit_count))
+
         return qc
 
-    def _add_constant_qft_dagger(qubit_count: int, constant: int) -> QuantumCircuit:
+    def _add_constant_qft_dagger(self, qubit_count: int, constant: int) -> QuantumCircuit:
         from qiskit.circuit.library import QFT
         import numpy as np
 

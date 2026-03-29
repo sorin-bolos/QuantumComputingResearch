@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 __all__ = [
     "CircuitStats",
@@ -24,3 +25,9 @@ class Results:
     sampled_zero_probability: float
     noisy_sampled_zero_amplitude: float
     noisy_sampled_zero_probability: float
+    estimator_zero_amplitude: float = None
+    estimator_zero_probability: float = None
+    ibm_sampler_zero_amplitude: Optional[float] = None
+    ibm_sampler_zero_probability: Optional[float] = None
+    ibm_estimator_zero_amplitude: Optional[float] = None
+    ibm_estimator_zero_probability: Optional[float] = None

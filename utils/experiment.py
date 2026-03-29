@@ -2,32 +2,74 @@ from utils.integrals import Integals
 from utils.simulation_excutor import SimulationExecutor
 from utils.sample_interpreter import SampleInterpreter
 from utils.noisy_simulation_executor import NoisySimulationExecutor
+from utils.noisy_estimator_executor import NoisyEstimatorExecutor
+from utils.ibm_executor import IbmExecutor
+from utils.ibm_estimator_executor import IbmEstimatorExecutor
 from utils.dataclasses import Results
+
 
 class Experiment:
 
-    def __init__(self, allow_measurement: bool = True, optimize_t_gates: bool =True):
+    def __init__(
+        self,
+        allow_measurement: bool = True,
+        optimize_t_gates: bool = True,
+        ibm_backend=None,
+    ):
         self.allow_measurement = allow_measurement
         self.optimize_t_gates = optimize_t_gates
+        self.ibm_backend = ibm_backend
+
+        if ibm_backend is not None:
+            self.ibm_executor = IbmExecutor(
+                ibm_backend,
+                enable_dd=(not allow_measurement),
+                enable_twirling=True,
+                enable_m3=True,
+            )
+            self.ibm_estimator_executor = IbmEstimatorExecutor(
+                ibm_backend,
+                enable_dd=(not allow_measurement),
+                enable_twirling=True,
+                enable_measure_mitigation=True,
+                enable_zne=True,
+                zne_noise_factors=[1, 3, 5, 7],
+            )
+        else:
+            self.ibm_executor = None
+            self.ibm_estimator_executor = None
 
     def run_single_s1_1d_overlap_integral(
-            self, 
-            qubit_count: int, 
-            decay_constant: float, 
-            max_range: int, 
+            self,
+            qubit_count: int,
+            decay_constant: float,
+            max_range: int,
             center_distance: int,
             shots: int = 1024,
             print_results: bool = True) -> Results:
-        
+
         simulation_executor = SimulationExecutor()
         sample_interpreter = SampleInterpreter()
-        noisy_simlutation_executor = NoisySimulationExecutor(enable_dd=(not self.allow_measurement), enable_twirling=True, enable_m3=True)
-        
+        noisy_simulation_executor = NoisySimulationExecutor(
+            enable_dd=(not self.allow_measurement),
+            enable_twirling=True,
+            enable_m3=True,
+        )
+        noisy_estimator_executor = NoisyEstimatorExecutor(
+            enable_dd=(not self.allow_measurement),
+            enable_twirling=True,
+            enable_measure_mitigation=True,
+            enable_zne=True,
+            zne_noise_factors=[1, 3, 5, 7],
+        )
+
         integrals = Integals(self.allow_measurement, self.optimize_t_gates)
         qc = integrals.get_s1_1d_overlap_circuit(qubit_count, decay_constant, max_range, center_distance)
 
+        # ── noiseless simulation ───────────────────────────────────────────────
+
         if print_results:
-            print("############# Noisless simulation ############3")
+            print("############# Noiseless simulation #############")
             print()
 
         data_amps = simulation_executor.get_data_amplitudes(qc, qubit_count)
@@ -39,26 +81,79 @@ class Experiment:
         sampled_zero_probability = sample_interpreter.get_zero_probability(counts)
 
         if print_results:
-            print(f"analitical_zero_amplitude = {analitical_zero_amplitude}")
+            print(f"analitical_zero_amplitude  = {analitical_zero_amplitude}")
             print(f"analitical_zero_probability = {analitical_zero_probablity}")
-            print(f"sampled_zero_amplitude = {sampled_zero_amplitude}")
-            print(f"sampled_zero_probability = {sampled_zero_probability}")
-
+            print(f"sampled_zero_amplitude     = {sampled_zero_amplitude}")
+            print(f"sampled_zero_probability   = {sampled_zero_probability}")
             sample_interpreter.print_errors(0.600494, sampled_zero_amplitude, analitical_zero_amplitude)
 
-            print("############# Noisy simulation ############3")
+        # ── noisy simulation (sampler) ─────────────────────────────────────────
+
+        if print_results:
+            print()
+            print("############# Noisy simulation #############")
             print()
 
-        noisy_simlutation_executor.print_circuit_stats(qc)
-        counts = noisy_simlutation_executor.sample_measurement_counts(qc, qubit_count, shots=shots)
+        noisy_simulation_executor.print_circuit_stats(qc)
+        counts = noisy_simulation_executor.sample_measurement_counts(qc, qubit_count, shots=shots)
         noisy_sampled_zero_amplitude = sample_interpreter.get_zero_amplitude(counts)
         noisy_sampled_zero_probability = sample_interpreter.get_zero_probability(counts)
 
         if print_results:
-            print(f"noisy_sampled_zero_amplitude = {noisy_sampled_zero_amplitude}")
+            print(f"noisy_sampled_zero_amplitude  = {noisy_sampled_zero_amplitude}")
             print(f"noisy_sampled_zero_probability = {noisy_sampled_zero_probability}")
-
             sample_interpreter.print_errors(0.600494, noisy_sampled_zero_amplitude, analitical_zero_amplitude)
+
+        # ── noisy simulation (estimator + ZNE) ────────────────────────────────
+
+        if print_results:
+            print()
+            print("############# Noisy estimator #############")
+            print()
+
+        estimator_zero_probability = noisy_estimator_executor.get_probability_of_zero(qc, qubit_count, shots=shots)
+        estimator_zero_amplitude = noisy_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
+
+        if print_results:
+            print(f"estimator_zero_probability = {estimator_zero_probability}")
+            print(f"estimator_zero_amplitude   = {estimator_zero_amplitude}")
+            sample_interpreter.print_errors(0.600494, estimator_zero_amplitude, analitical_zero_amplitude)
+
+        # ── real hardware ──────────────────────────────────────────────────────
+
+        ibm_sampler_zero_amplitude = None
+        ibm_sampler_zero_probability = None
+        ibm_estimator_zero_amplitude = None
+        ibm_estimator_zero_probability = None
+
+        if self.ibm_backend is not None:
+            if print_results:
+                print()
+                print("############# IBM hardware (sampler) #############")
+                print()
+
+            self.ibm_executor.print_circuit_stats(qc)
+            ibm_counts = self.ibm_executor.sample_measurement_counts(qc, qubit_count, shots=shots)
+            ibm_sampler_zero_amplitude = sample_interpreter.get_zero_amplitude(ibm_counts)
+            ibm_sampler_zero_probability = sample_interpreter.get_zero_probability(ibm_counts)
+
+            if print_results:
+                print(f"ibm_sampler_zero_amplitude  = {ibm_sampler_zero_amplitude}")
+                print(f"ibm_sampler_zero_probability = {ibm_sampler_zero_probability}")
+                sample_interpreter.print_errors(0.600494, ibm_sampler_zero_amplitude, analitical_zero_amplitude)
+
+            if print_results:
+                print()
+                print("############# IBM hardware (estimator + ZNE) #############")
+                print()
+
+            ibm_estimator_zero_probability = self.ibm_estimator_executor.get_probability_of_zero(qc, qubit_count, shots=shots)
+            ibm_estimator_zero_amplitude = self.ibm_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
+
+            if print_results:
+                print(f"ibm_estimator_zero_probability = {ibm_estimator_zero_probability}")
+                print(f"ibm_estimator_zero_amplitude   = {ibm_estimator_zero_amplitude}")
+                sample_interpreter.print_errors(0.600494, ibm_estimator_zero_amplitude, analitical_zero_amplitude)
 
         return Results(
             analitical_zero_amplitude=analitical_zero_amplitude,
@@ -66,6 +161,11 @@ class Experiment:
             sampled_zero_amplitude=sampled_zero_amplitude,
             sampled_zero_probability=sampled_zero_probability,
             noisy_sampled_zero_amplitude=noisy_sampled_zero_amplitude,
-            noisy_sampled_zero_probability=noisy_sampled_zero_probability
+            noisy_sampled_zero_probability=noisy_sampled_zero_probability,
+            estimator_zero_amplitude=estimator_zero_amplitude,
+            estimator_zero_probability=estimator_zero_probability,
+            ibm_sampler_zero_amplitude=ibm_sampler_zero_amplitude,
+            ibm_sampler_zero_probability=ibm_sampler_zero_probability,
+            ibm_estimator_zero_amplitude=ibm_estimator_zero_amplitude,
+            ibm_estimator_zero_probability=ibm_estimator_zero_probability,
         )
-
