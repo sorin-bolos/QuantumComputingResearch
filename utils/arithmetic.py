@@ -26,6 +26,7 @@ class ArithmeticOperator:
     def subtract_constant(self, qubit_count: int, constant: int):
         constant = constant % (2**qubit_count)
         constant = (2**qubit_count) - constant
+        
         return self.add_constant(qubit_count, constant)
 
     @staticmethod

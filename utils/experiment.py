@@ -93,15 +93,15 @@ class Experiment:
         sampled_zero_amplitude = sample_interpreter.get_zero_amplitude(counts)
         sampled_zero_probability = sample_interpreter.get_zero_probability(counts)
 
-        # # ── noisy simulation (sampler) ─────────────────────────────────────────
+        # ── noisy simulation (sampler) ─────────────────────────────────────────
 
-        # counts = self._noisy_sampler_executor.sample_measurement_counts(qc, qubit_count, shots=shots)
-        # noisy_sampled_zero_amplitude = sample_interpreter.get_zero_amplitude(counts)
-        # noisy_sampled_zero_probability = sample_interpreter.get_zero_probability(counts)
+        counts = self._noisy_sampler_executor.sample_measurement_counts(qc, qubit_count, shots=shots)
+        noisy_sampled_zero_amplitude = sample_interpreter.get_zero_amplitude(counts)
+        noisy_sampled_zero_probability = sample_interpreter.get_zero_probability(counts)
 
-        # # ── noisy simulation (estimator + ZNE) ────────────────────────────────
+        # ── noisy simulation (estimator + ZNE) ────────────────────────────────
 
-        # estimator_zero_amplitude, estimator_zero_probability = self._noisy_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
+        estimator_zero_amplitude, estimator_zero_probability = self._noisy_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
 
         # ── real hardware ──────────────────────────────────────────────────────
 
@@ -129,12 +129,12 @@ class Experiment:
             sampled_zero_amplitude=sampled_zero_amplitude,
             sampled_zero_probability=sampled_zero_probability,
             errors_for_sampled=sample_interpreter.get_errors(exact_result, sampled_zero_amplitude, analitical_zero_amplitude),
-            # noisy_sampled_zero_amplitude=noisy_sampled_zero_amplitude,
-            # noisy_sampled_zero_probability=noisy_sampled_zero_probability,
-            # errors_for_noisy_sampled=sample_interpreter.get_errors(exact_result, noisy_sampled_zero_amplitude, analitical_zero_amplitude),
-            # estimator_zero_amplitude=estimator_zero_amplitude,
-            # estimator_zero_probability=estimator_zero_probability,
-            # errors_for_estimator=sample_interpreter.get_errors(exact_result, estimator_zero_amplitude, analitical_zero_amplitude),
+            noisy_sampled_zero_amplitude=noisy_sampled_zero_amplitude,
+            noisy_sampled_zero_probability=noisy_sampled_zero_probability,
+            errors_for_noisy_sampled=sample_interpreter.get_errors(exact_result, noisy_sampled_zero_amplitude, analitical_zero_amplitude),
+            estimator_zero_amplitude=estimator_zero_amplitude,
+            estimator_zero_probability=estimator_zero_probability,
+            errors_for_estimator=sample_interpreter.get_errors(exact_result, estimator_zero_amplitude, analitical_zero_amplitude),
             ibm_sampler_zero_amplitude=ibm_sampler_zero_amplitude,
             ibm_sampler_zero_probability=ibm_sampler_zero_probability,
             errors_for_ibm_sampler=sample_interpreter.get_errors(exact_result, ibm_sampler_zero_amplitude, analitical_zero_amplitude) if ibm_sampler_zero_amplitude is not None else None,
