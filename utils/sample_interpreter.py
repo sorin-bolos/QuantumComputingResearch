@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+from utils.dataclasses import Errors
+
 class SampleInterpreter:
 
     def __init__(self):
@@ -104,17 +106,28 @@ class SampleInterpreter:
             bar = '█' * int(counts[state] / shots * 40)
             print(f"  |{state}⟩ : {counts[state]:4d}  {bar}")
 
+    def get_errors(self, theoretical: float, sampled: float, statevector_result: float):
+        error_vs_continuous = abs(sampled - theoretical)
+        percent_error_vs_continuous = error_vs_continuous/theoretical*100
+
+        if statevector_result:
+            discretisation_error = abs(statevector_result  - theoretical)
+            percent_discretisation_error = discretisation_error/theoretical*100
+            shot_noise = abs(sampled - statevector_result)
+            percent_shot_noise = shot_noise/statevector_result*100
+
+        return Errors(
+            error_vs_continuous = error_vs_continuous,
+            percent_error_vs_continuous = percent_error_vs_continuous,
+            discretisation_error = discretisation_error,
+            percent_discretisation_error = percent_discretisation_error,
+            shot_noise = shot_noise,
+            percent_shot_noise = percent_shot_noise
+        )
+
     def print_errors(self, theoretical: float, sampled: float, statevector_result: float):
         print()
         print(f"Error vs continuous:  {abs(sampled - theoretical):.4f}  ({abs(sampled - theoretical)/theoretical*100:.2f} %)")
         if statevector_result:
             print(f"Discretisation error: {abs(statevector_result  - theoretical):.4f}  ({abs(statevector_result  - theoretical)/theoretical*100:.2f} %)")
             print(f"Shot noise:           {abs(sampled - statevector_result):.4f}  ({abs(sampled - statevector_result)/statevector_result*100:.2f} %)")
-
-        # error = abs(sampled - theoretical)/theoretical*100
-        
-        # if statevector_result: 
-        #     discretization_error = abs(statevector_result  - theoretical)/theoretical*100
-        #     shot_noise = abs(sampled - statevector_result)/statevector_result*100
-
-        # return (error, discretization_error, shot_noise)

@@ -10,28 +10,23 @@ class Sto1S:
         self.allow_measurement = allow_measurement
         self.optimize_t_gates = optimize_t_gates
 
-    def get_sto_1s_1d_carthesian(self, qubit_count: int, decay_constant: float, max_range: float, center_offset: int) -> QuantumCircuit:
+    def get_sto_1s_1d_carthesian(self, qubit_count: int, decay_constant: float, center_offset: int) -> QuantumCircuit:
         # Decaying exponential state: |ψ⟩ = N · Σ e^(-a·|i|) |i⟩
 
-        scale = max_range / (2 ** qubit_count)
-        scaled_constant = decay_constant * scale
-
-        sto_circuit = self._sto_1s_1d_cartesian(qubit_count, scaled_constant)
+        sto_circuit = self._sto_1s_1d_cartesian(qubit_count, decay_constant)
 
         arithmeticOperator = ArithmeticOperator(sto_circuit, self.allow_measurement, self.optimize_t_gates)
         qc = arithmeticOperator.add_constant(qubit_count, center_offset)
 
         return qc
     
-    def get_sto_1s_1d_carthesian_dagger(self, qubit_count: int, decay_constant: float, max_range: float, center_offset: int) -> QuantumCircuit:
-        scale = max_range / (2 ** qubit_count)
-        scaled_constant = decay_constant * scale
+    def get_sto_1s_1d_carthesian_dagger(self, qubit_count: int, decay_constant: float, center_offset: int) -> QuantumCircuit:
 
         qc = QuantumCircuit(qubit_count)
         arithmeticOperator = ArithmeticOperator(qc, self.allow_measurement, self.optimize_t_gates)
         add_dagger_circuit = arithmeticOperator.subtract_constant(qubit_count, center_offset)
 
-        sto_circuit_dagger_circuit =  self._sto_1s_1d_cartesian_dagger(qubit_count, scaled_constant)
+        sto_circuit_dagger_circuit =  self._sto_1s_1d_cartesian_dagger(qubit_count, decay_constant)
 
         n_total = add_dagger_circuit.num_qubits  # data + ancilla
         combined = QuantumCircuit(n_total)
@@ -39,21 +34,17 @@ class Sto1S:
             combined.add_register(creg)
         combined.compose(add_dagger_circuit, qubits=range(n_total), clbits=list(combined.clbits), inplace=True)
         combined.compose(sto_circuit_dagger_circuit, qubits=range(qubit_count), inplace=True)
-        
+
         return combined
 
         
 
-    def get_sto_1s_spherical(self, qubit_count: int, decay_constant: float, max_range: float) -> QuantumCircuit:
+    def get_sto_1s_spherical(self, qubit_count: int, decay_constant: float) -> QuantumCircuit:
         # Decaying exponential state: |ψ⟩ = N · Σ e^(-a·|i|) |i⟩
-
-        scale = max_range / (2 ** qubit_count)
-        scaled_constant = decay_constant * scale
-
-        return self._sto_1s_spherical(qubit_count, scaled_constant)
+        return self._sto_1s_spherical(qubit_count, decay_constant)
     
-    def get_sto_1s_spherical_dagger(self, qubit_count: int, decay_constant: float, max_range: float) -> QuantumCircuit:
-        return self.get_sto_1s_spherical(qubit_count, decay_constant, max_range).inverse()
+    def get_sto_1s_spherical_dagger(self, qubit_count: int, decay_constant: float) -> QuantumCircuit:
+        return self.get_sto_1s_spherical(qubit_count, decay_constant).inverse()
 
     
     @staticmethod
