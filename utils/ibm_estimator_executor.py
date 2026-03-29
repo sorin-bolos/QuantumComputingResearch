@@ -134,10 +134,20 @@ class IbmEstimatorExecutor:
 
     # ── public API ────────────────────────────────────────────────────────────
 
-    def get_probability_of_zero(
-        self, qc: QuantumCircuit, data_qubit_count: int, shots: int = 1024
+    def _get_probability_of_zero(
+        self, qc: QuantumCircuit, data_qubit_count: int, shots: int
     ) -> float:
-        """Estimate P(|0…0⟩) on *data_qubit_count* qubits via EstimatorV2.
+        obs = self._zero_state_projector(data_qubit_count, qc.num_qubits)
+        qc_isa = self._transpile(qc)
+        obs_isa = obs.apply_layout(qc_isa.layout)
+        self.estimator.options.default_shots = shots
+        result = self.estimator.run([(qc_isa, obs_isa)]).result()
+        return float(np.clip(result[0].data.evs, 0.0, 1.0))
+
+    def get_amplitude_of_zero(
+        self, qc: QuantumCircuit, data_qubit_count: int, shots: int = 1024
+    ) -> tuple[float, float]:
+        """Estimate √P(|0…0⟩) and P(|0…0⟩) via a single EstimatorV2 call.
 
         Parameters
         ----------
@@ -153,33 +163,9 @@ class IbmEstimatorExecutor:
 
         Returns
         -------
-        float
-            Estimated P(|0…0⟩), clipped to [0, 1].
-            ZNE extrapolation can produce slightly negative values; clipping
-            corrects for this.
+        tuple[float, float]
+            ``(amplitude, probability)`` where amplitude = √P(|0…0⟩) and
+            probability = P(|0…0⟩), both clipped to [0, 1].
         """
-        obs = self._zero_state_projector(data_qubit_count, qc.num_qubits)
-        qc_isa = self._transpile(qc)
-        obs_isa = obs.apply_layout(qc_isa.layout)
-
-        self.estimator.options.default_shots = shots
-        result = self.estimator.run([(qc_isa, obs_isa)]).result()
-        return float(np.clip(result[0].data.evs, 0.0, 1.0))
-
-    def get_amplitude_of_zero(
-        self, qc: QuantumCircuit, data_qubit_count: int, shots: int = 1024
-    ) -> float:
-        """Estimate √P(|0…0⟩) = |⟨0…0|ψ⟩| via EstimatorV2.
-
-        Parameters
-        ----------
-        qc : QuantumCircuit
-        data_qubit_count : int
-        shots : int, optional
-
-        Returns
-        -------
-        float
-            √P(|0…0⟩).
-        """
-        return float(np.sqrt(self.get_probability_of_zero(qc, data_qubit_count, shots)))
+        probability = self._get_probability_of_zero(qc, data_qubit_count, shots)
+        return float(np.sqrt(probability)), probability

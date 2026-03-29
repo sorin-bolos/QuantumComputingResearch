@@ -1,9 +1,9 @@
 from utils.integrals import Integals
 from utils.simulation_excutor import SimulationExecutor
 from utils.sample_interpreter import SampleInterpreter
-from utils.noisy_simulation_executor import NoisySimulationExecutor
+from utils.noisy_sampler_executor import NoisySamplerExecutor
 from utils.noisy_estimator_executor import NoisyEstimatorExecutor
-from utils.ibm_executor import IbmExecutor
+from utils.ibm_sampler_executor import IbmSamplerExecutor
 from utils.ibm_estimator_executor import IbmEstimatorExecutor
 from utils.dataclasses import Results
 
@@ -29,7 +29,7 @@ class Experiment:
         # disabled regardless of the enable_dd flag.
         enable_dd = enable_dd and (not allow_measurement)
 
-        self._noisy_simulation_executor = NoisySimulationExecutor(
+        self._noisy_sampler_executor = NoisySamplerExecutor(
             enable_dd=enable_dd,
             enable_twirling=enable_twirling,
             enable_m3=True,
@@ -43,7 +43,7 @@ class Experiment:
         )
 
         if ibm_backend is not None:
-            self.ibm_executor = IbmExecutor(
+            self.ibm_sampler_executor = IbmSamplerExecutor(
                 ibm_backend,
                 enable_dd=enable_dd,
                 enable_twirling=enable_twirling,
@@ -58,7 +58,7 @@ class Experiment:
                 zne_noise_factors=[1, 3, 5, 7],
             )
         else:
-            self.ibm_executor = None
+            self.ibm_sampler_executor = None
             self.ibm_estimator_executor = None
 
     def run_single_s1_1d_overlap_integral(
@@ -104,8 +104,8 @@ class Experiment:
             print("############# Noisy simulation #############")
             print()
 
-        self._noisy_simulation_executor.print_circuit_stats(qc)
-        counts = self._noisy_simulation_executor.sample_measurement_counts(qc, qubit_count, shots=shots)
+        self._noisy_sampler_executor.print_circuit_stats(qc)
+        counts = self._noisy_sampler_executor.sample_measurement_counts(qc, qubit_count, shots=shots)
         noisy_sampled_zero_amplitude = sample_interpreter.get_zero_amplitude(counts)
         noisy_sampled_zero_probability = sample_interpreter.get_zero_probability(counts)
 
@@ -121,8 +121,7 @@ class Experiment:
             print("############# Noisy estimator #############")
             print()
 
-        estimator_zero_probability = self._noisy_estimator_executor.get_probability_of_zero(qc, qubit_count, shots=shots)
-        estimator_zero_amplitude = self._noisy_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
+        estimator_zero_amplitude, estimator_zero_probability = self._noisy_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
 
         if print_results:
             print(f"estimator_zero_probability = {estimator_zero_probability}")
@@ -142,8 +141,8 @@ class Experiment:
                 print("############# IBM hardware (sampler) #############")
                 print()
 
-            self.ibm_executor.print_circuit_stats(qc)
-            ibm_counts = self.ibm_executor.sample_measurement_counts(qc, qubit_count, shots=shots)
+            self.ibm_sampler_executor.print_circuit_stats(qc)
+            ibm_counts = self.ibm_sampler_executor.sample_measurement_counts(qc, qubit_count, shots=shots)
             ibm_sampler_zero_amplitude = sample_interpreter.get_zero_amplitude(ibm_counts)
             ibm_sampler_zero_probability = sample_interpreter.get_zero_probability(ibm_counts)
 
@@ -157,8 +156,7 @@ class Experiment:
                 print("############# IBM hardware (estimator + ZNE) #############")
                 print()
 
-            ibm_estimator_zero_probability = self.ibm_estimator_executor.get_probability_of_zero(qc, qubit_count, shots=shots)
-            ibm_estimator_zero_amplitude = self.ibm_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
+            ibm_estimator_zero_amplitude, ibm_estimator_zero_probability = self.ibm_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
 
             if print_results:
                 print(f"ibm_estimator_zero_probability = {ibm_estimator_zero_probability}")
