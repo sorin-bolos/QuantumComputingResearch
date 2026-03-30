@@ -19,6 +19,8 @@ class Experiment:
         enable_twirling: bool = True,
         enable_measure_mitigation: bool = True,
         enable_zne: bool = True,
+        zne_noise_factors: list = None,
+        zne_extrapolator: str = 'linear',
         ibm_backend=None,
     ):
         self.allow_measurement = allow_measurement
@@ -29,6 +31,7 @@ class Experiment:
         # When allow_measurement=True the circuit uses if_else, so DD is silently
         # disabled regardless of the enable_dd flag.
         enable_dd = enable_dd and (not allow_measurement)
+        zne_noise_factors = zne_noise_factors or [1, 2, 3]
 
         self._noisy_sampler_executor = NoisySamplerExecutor(
             enable_dd=enable_dd,
@@ -40,7 +43,8 @@ class Experiment:
             enable_twirling=enable_twirling,
             enable_measure_mitigation=enable_measure_mitigation,
             enable_zne=enable_zne,
-            zne_noise_factors=[1, 3, 5, 7],
+            zne_noise_factors=zne_noise_factors,
+            zne_extrapolator=zne_extrapolator,
         )
 
         if ibm_backend is not None:
@@ -56,7 +60,8 @@ class Experiment:
                 enable_twirling=enable_twirling,
                 enable_measure_mitigation=enable_measure_mitigation,
                 enable_zne=enable_zne,
-                zne_noise_factors=[1, 3, 5, 7],
+                zne_noise_factors=zne_noise_factors,
+                zne_extrapolator=zne_extrapolator,
             )
         else:
             self.ibm_sampler_executor = None
@@ -115,7 +120,8 @@ class Experiment:
             ibm_sampler_zero_amplitude = sample_interpreter.get_zero_amplitude(ibm_counts)
             ibm_sampler_zero_probability = sample_interpreter.get_zero_probability(ibm_counts)
 
-            ibm_estimator_zero_amplitude, ibm_estimator_zero_probability = self.ibm_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
+            if not self.allow_measurement:
+                ibm_estimator_zero_amplitude, ibm_estimator_zero_probability = self.ibm_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
 
         # ── assemble results ───────────────────────────────────────────────────
 
