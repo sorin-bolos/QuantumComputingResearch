@@ -1,0 +1,98 @@
+  Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : 0.600494
+
+  â”€â”€ Analytical (noiseless statevector) â”€â”€
+  Amplitude    : 0.600721
+  Probability  : 0.360865
+  Error vs continuous  : 0.000227  (0.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.000000  (0.00 %)
+
+  â”€â”€ Sampled (noiseless shot-based) â”€â”€
+  Amplitude    : 0.613169
+  Probability  : 0.375977
+  Error vs continuous  : 0.012675  (2.11 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.012449  (2.07 %)
+
+  â”€â”€ Noisy sampler (fake backend) â”€â”€
+  Amplitude    : 0.231305
+  Probability  : 0.053502
+  Error vs continuous  : 0.369189  (61.48 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.369416  (61.50 %)
+
+  â”€â”€ Noisy estimator + ZNE (fake backend) â”€â”€
+  Amplitude    : 0.202523
+  Probability  : 0.041016
+  Error vs continuous  : 0.397971  (66.27 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.398198  (66.29 %)
+  
+  
+  
+  Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : 0.600494
+
+  â”€â”€ Analytical (noiseless statevector) â”€â”€
+  Amplitude    : 0.600721
+  Probability  : 0.360865
+  Error vs continuous  : 0.000227  (0.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.000000  (0.00 %)
+
+  â”€â”€ Sampled (noiseless shot-based) â”€â”€
+  Amplitude    : 0.614760
+  Probability  : 0.377930
+  Error vs continuous  : 0.014266  (2.38 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.014039  (2.34 %)
+
+  â”€â”€ Noisy sampler (fake backend) â”€â”€
+  Amplitude    : 0.206384
+  Probability  : 0.042594
+  Error vs continuous  : 0.394110  (65.63 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.394337  (65.64 %)
+
+  â”€â”€ Noisy estimator + ZNE (fake backend) â”€â”€
+  Amplitude    : 0.229640
+  Probability  : 0.052734
+  Error vs continuous  : 0.370854  (61.76 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.371081  (61.77 %)
+  
+  
+  Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : 0.600494
+
+  â”€â”€ Analytical (noiseless statevector) â”€â”€
+  Amplitude    : 0.600721
+  Probability  : 0.360865
+  Error vs continuous  : 0.000227  (0.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.000000  (0.00 %)
+
+  â”€â”€ Sampled (noiseless shot-based) â”€â”€
+  Amplitude    : 0.613965
+  Probability  : 0.376953
+  Error vs continuous  : 0.013471  (2.24 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.013244  (2.20 %)
+
+  â”€â”€ Noisy sampler (fake backend) â”€â”€
+  Amplitude    : 0.201932
+  Probability  : 0.040777
+  Error vs continuous  : 0.398562  (66.37 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.398788  (66.38 %)
+
+  â”€â”€ Noisy estimator + ZNE (fake backend) â”€â”€
+  Amplitude    : 0.200098
+  Probability  : 0.040039
+  Error vs continuous  : 0.400396  (66.68 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.400623  (66.69 %)

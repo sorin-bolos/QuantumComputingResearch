@@ -1,0 +1,340 @@
+Marakesh ZNE
+
+###### linear [1, 2, 3]
+
+  Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : 0.600494
+
+  ── Analytical (noiseless statevector) ──
+  Amplitude    : 0.600721
+  Probability  : 0.360865
+  Error vs continuous  : 0.000227  (0.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.000000  (0.00 %)
+
+  ── Sampled (noiseless shot-based) ──
+  Amplitude    : 0.606765
+  Probability  : 0.368164
+  Error vs continuous  : 0.006271  (1.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.006045  (1.01 %)
+
+  ── Noisy sampler (fake backend) ──
+  Amplitude    : 0.256197
+  Probability  : 0.065637
+  Error vs continuous  : 0.344297  (57.34 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.344523  (57.35 %)
+
+  ── Noisy estimator + ZNE (fake backend) ──
+  Amplitude    : 0.263317
+  Probability  : 0.069336
+  Error vs continuous  : 0.337177  (56.15 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.337403  (56.17 %)
+
+  ── IBM hardware sampler ──
+  Amplitude    : 0.257443
+  Probability  : 0.066277
+  Error vs continuous  : 0.343051  (57.13 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.343278  (57.14 %)
+
+  ── IBM hardware estimator + ZNE ──
+  Amplitude    : 0.316549
+  Probability  : 0.100203
+  Error vs continuous  : 0.283946  (47.29 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise      : 0.284172  (47.31 %)
+  
+------------ enable_twirling=False,    enable_measure_mitigation=False,------------
+Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : 0.600494
+
+  ── Analytical (noiseless statevector) ──
+  Amplitude    : 0.600721
+  Probability  : 0.360865
+  Error vs continuous  : 0.000227  (0.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.000000  (0.00 %)
+
+  ── Sampled (noiseless shot-based) ──
+  Amplitude    : 0.597030
+  Probability  : 0.356445
+  Error vs continuous  : 0.003464  (0.58 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.003690  (0.61 %)
+
+  ── Noisy sampler (fake backend) ──
+  Amplitude    : 0.278558
+  Probability  : 0.077595
+  Error vs continuous  : 0.321936  (53.61 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.322163  (53.63 %)
+
+  ── Noisy estimator + ZNE (fake backend) ──
+  Amplitude    : 0.153093
+  Probability  : 0.023438
+  Error vs continuous  : 0.447401  (74.51 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.447628  (74.52 %)
+
+  ── IBM hardware sampler ──
+  Amplitude    : 0.322623
+  Probability  : 0.104086
+  Error vs continuous  : 0.277871  (46.27 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.278098  (46.29 %)
+
+  ── IBM hardware estimator + ZNE ──
+  Amplitude    : 0.392093
+  Probability  : 0.153737
+  Error vs continuous  : 0.208401  (34.70 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.208627  (34.73 %)
+  
+  
+  
+  
+###### exponential [1, 2, 3]
+  
+  Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : 0.600494
+
+  ── Analytical (noiseless statevector) ──
+  Amplitude    : 0.600721
+  Probability  : 0.360865
+  Error vs continuous  : 0.000227  (0.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.000000  (0.00 %)
+
+  ── Sampled (noiseless shot-based) ──
+  Amplitude    : 0.601106
+  Probability  : 0.361328
+  Error vs continuous  : 0.000612  (0.10 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.000385  (0.06 %)
+
+  ── Noisy sampler (fake backend) ──
+  Amplitude    : 0.312385
+  Probability  : 0.097585
+  Error vs continuous  : 0.288109  (47.98 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.288335  (48.00 %)
+
+  ── Noisy estimator + ZNE (fake backend) ──
+  Amplitude    : 0.294812
+  Probability  : 0.086914
+  Error vs continuous  : 0.305682  (50.91 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.305909  (50.92 %)
+
+  ── IBM hardware sampler ──
+  Amplitude    : 0.255543
+  Probability  : 0.065302
+  Error vs continuous  : 0.344951  (57.44 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.345178  (57.46 %)
+
+  ── IBM hardware estimator + ZNE ──
+  Amplitude    : nan
+  Probability  : nan
+  Error vs continuous  : nan  (nan %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : nan  (nan %)
+  
+  
+### linear [1, 3, 5]
+
+Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : 0.600494
+
+  ── Analytical (noiseless statevector) ──
+  Amplitude    : 0.600721
+  Probability  : 0.360865
+  Error vs continuous  : 0.000227  (0.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.000000  (0.00 %)
+
+  ── Sampled (noiseless shot-based) ──
+  Amplitude    : 0.593750
+  Probability  : 0.352539
+  Error vs continuous  : 0.006744  (1.12 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.006971  (1.16 %)
+
+  ── Noisy sampler (fake backend) ──
+  Amplitude    : 0.268039
+  Probability  : 0.071845
+  Error vs continuous  : 0.332455  (55.36 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.332682  (55.38 %)
+
+  ── Noisy estimator + ZNE (fake backend) ──
+  Amplitude    : 0.251946
+  Probability  : 0.063477
+  Error vs continuous  : 0.348548  (58.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.348775  (58.06 %)
+
+  ── IBM hardware sampler ──
+  Amplitude    : 0.235587
+  Probability  : 0.055501
+  Error vs continuous  : 0.364907  (60.77 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.365133  (60.78 %)
+
+  ── IBM hardware estimator + ZNE ──
+  Amplitude    : 0.254133
+  Probability  : 0.064583
+  Error vs continuous  : 0.346361  (57.68 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.346588  (57.70 %)
+  
+------------ enable_twirling=False,    enable_measure_mitigation=False,------------ [1, 3, 5] bymistake
+  
+Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : 0.600494
+
+  ── Analytical (noiseless statevector) ──
+  Amplitude    : 0.600721
+  Probability  : 0.360865
+  Error vs continuous  : 0.000227  (0.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.000000  (0.00 %)
+
+  ── Sampled (noiseless shot-based) ──
+  Amplitude    : 0.589624
+  Probability  : 0.347656
+  Error vs continuous  : 0.010870  (1.81 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.011097  (1.85 %)
+
+  ── Noisy sampler (fake backend) ──
+  Amplitude    : 0.230633
+  Probability  : 0.053191
+  Error vs continuous  : 0.369861  (61.59 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.370088  (61.61 %)
+
+  ── Noisy estimator + ZNE (fake backend) ──
+  Amplitude    : 0.250000
+  Probability  : 0.062500
+  Error vs continuous  : 0.350494  (58.37 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.350721  (58.38 %)
+
+  ── IBM hardware sampler ──
+  Amplitude    : 0.316535
+  Probability  : 0.100195
+  Error vs continuous  : 0.283959  (47.29 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.284185  (47.31 %)
+
+  ── IBM hardware estimator + ZNE ──
+  Amplitude    : 0.372374
+  Probability  : 0.138662
+  Error vs continuous  : 0.228120  (37.99 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.228347  (38.01 %)
+  
+------------ enable_twirling=False,    enable_measure_mitigation=False,------------
+Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : 0.600494
+
+  ── Analytical (noiseless statevector) ──
+  Amplitude    : 0.600721
+  Probability  : 0.360865
+  Error vs continuous  : 0.000227  (0.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.000000  (0.00 %)
+
+  ── Sampled (noiseless shot-based) ──
+  Amplitude    : 0.617138
+  Probability  : 0.380859
+  Error vs continuous  : 0.016644  (2.77 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.016417  (2.73 %)
+
+  ── Noisy sampler (fake backend) ──
+  Amplitude    : 0.276543
+  Probability  : 0.076476
+  Error vs continuous  : 0.323951  (53.95 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.324177  (53.96 %)
+
+  ── Noisy estimator + ZNE (fake backend) ──
+  Amplitude    : 0.288111
+  Probability  : 0.083008
+  Error vs continuous  : 0.312383  (52.02 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.312610  (52.04 %)
+
+  ── IBM hardware sampler ──
+  Amplitude    : 0.272033
+  Probability  : 0.074002
+  Error vs continuous  : 0.328461  (54.70 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.328688  (54.72 %)
+
+  ── IBM hardware estimator + ZNE ──
+  Amplitude    : 0.322766
+  Probability  : 0.104178
+  Error vs continuous  : 0.277728  (46.25 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.277955  (46.27 %)
+  
+  
+#### exponential [1, 3, 5]
+
+Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : 0.600494
+
+  ── Analytical (noiseless statevector) ──
+  Amplitude    : 0.600721
+  Probability  : 0.360865
+  Error vs continuous  : 0.000227  (0.04 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.000000  (0.00 %)
+
+  ── Sampled (noiseless shot-based) ──
+  Amplitude    : 0.605154
+  Probability  : 0.366211
+  Error vs continuous  : 0.004660  (0.78 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.004433  (0.74 %)
+
+  ── Noisy sampler (fake backend) ──
+  Amplitude    : 0.250724
+  Probability  : 0.062863
+  Error vs continuous  : 0.349770  (58.25 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.349996  (58.26 %)
+
+  ── Noisy estimator + ZNE (fake backend) ──
+  Amplitude    : 0.248039
+  Probability  : 0.061523
+  Error vs continuous  : 0.352455  (58.69 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.352681  (58.71 %)
+
+  ── IBM hardware sampler ──
+  Amplitude    : 0.275858
+  Probability  : 0.076098
+  Error vs continuous  : 0.324636  (54.06 %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : 0.324863  (54.08 %)
+
+  ── IBM hardware estimator + ZNE ──
+  Amplitude    : nan
+  Probability  : nan
+  Error vs continuous  : nan  (nan %)
+  Discretisation error : 0.000227  (0.04 %)
+  Shot noise           : nan  (nan %)

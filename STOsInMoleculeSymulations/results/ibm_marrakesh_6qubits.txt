@@ -1,0 +1,49 @@
+##################### 6 qubits on ibm_marakesh
+
+######## ZNE linear 1,2,3, no other optimization
+
+Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 11
+  Exact result             : 0.600494
+
+  ── Analytical (noiseless statevector) ──
+  Amplitude    : 0.601400
+  Probability  : 0.361682
+  Error vs continuous  : 0.000906  (0.15 %)
+  Discretisation error : 0.000906  (0.15 %)
+  Shot noise           : 0.000000  (0.00 %)
+
+  ── Sampled (noiseless shot-based) ──
+  Amplitude    : 0.605154
+  Probability  : 0.366211
+  Error vs continuous  : 0.004660  (0.78 %)
+  Discretisation error : 0.000906  (0.15 %)
+  Shot noise           : 0.003753  (0.62 %)
+
+  ── Noisy sampler (fake backend) ──
+  Amplitude    : 0.307927
+  Probability  : 0.094819
+  Error vs continuous  : 0.292567  (48.72 %)
+  Discretisation error : 0.000906  (0.15 %)
+  Shot noise           : 0.293473  (48.80 %)
+
+  ── Noisy estimator + ZNE (fake backend) ──
+  Amplitude    : 0.298106
+  Probability  : 0.088867
+  Error vs continuous  : 0.302388  (50.36 %)
+  Discretisation error : 0.000906  (0.15 %)
+  Shot noise           : 0.303294  (50.43 %)
+
+  ── IBM hardware sampler ──
+  Amplitude    : 0.339296
+  Probability  : 0.115122
+  Error vs continuous  : 0.261198  (43.50 %)
+  Discretisation error : 0.000906  (0.15 %)
+  Shot noise           : 0.262104  (43.58 %)
+
+  ── IBM hardware estimator + ZNE ──
+  Amplitude    : 0.325051
+  Probability  : 0.105658
+  Error vs continuous  : 0.275443  (45.87 %)
+  Discretisation error : 0.000906  (0.15 %)
+  Shot noise           : 0.276349  (45.95 %)

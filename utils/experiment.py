@@ -6,6 +6,7 @@ from utils.noisy_estimator_executor import NoisyEstimatorExecutor
 from utils.ibm_sampler_executor import IbmSamplerExecutor
 from utils.ibm_estimator_executor import IbmEstimatorExecutor
 from utils.dataclasses import Results
+from utils.resource_estimator import ResourceEstimator
 import numpy as np
 
 
@@ -22,10 +23,12 @@ class Experiment:
         zne_noise_factors: list = None,
         zne_extrapolator: str = 'linear',
         ibm_backend=None,
+        fake_backend=None,
     ):
         self.allow_measurement = allow_measurement
         self.optimize_t_gates = optimize_t_gates
         self.ibm_backend = ibm_backend
+        self.fake_backend = fake_backend
 
         # DD is incompatible with dynamic circuits (mid-circuit measurements).
         # When allow_measurement=True the circuit uses if_else, so DD is silently
@@ -37,6 +40,7 @@ class Experiment:
             enable_dd=enable_dd,
             enable_twirling=enable_twirling,
             enable_m3=True,
+            backend = fake_backend
         )
         self._noisy_estimator_executor = NoisyEstimatorExecutor(
             enable_dd=enable_dd,
@@ -45,6 +49,7 @@ class Experiment:
             enable_zne=enable_zne,
             zne_noise_factors=zne_noise_factors,
             zne_extrapolator=zne_extrapolator,
+            backend=fake_backend
         )
 
         if ibm_backend is not None:
@@ -67,6 +72,8 @@ class Experiment:
             self.ibm_sampler_executor = None
             self.ibm_estimator_executor = None
 
+        self.resource_estimator = ResourceEstimator()
+
     def run_single_s1_1d_overlap_integral(
             self,
             qubit_count: int,
@@ -87,6 +94,9 @@ class Experiment:
 
         integrals = Integals(self.allow_measurement, self.optimize_t_gates)
         qc = integrals.get_s1_1d_overlap_circuit(qubit_count, scaled_decay_constant, scaled_center_distance)
+
+        noisy_simulation_stats = self.resource_estimator.get_circuit_stats(qc, self.fake_backend)
+        ibm_backend_stats = self.resource_estimator.get_circuit_stats(qc, self.ibm_backend)
 
         # ── noiseless simulation ───────────────────────────────────────────────
 
@@ -115,13 +125,13 @@ class Experiment:
         ibm_estimator_zero_amplitude = None
         ibm_estimator_zero_probability = None
 
-        if self.ibm_backend is not None:
-            ibm_counts = self.ibm_sampler_executor.sample_measurement_counts(qc, qubit_count, shots=shots)
-            ibm_sampler_zero_amplitude = sample_interpreter.get_zero_amplitude(ibm_counts)
-            ibm_sampler_zero_probability = sample_interpreter.get_zero_probability(ibm_counts)
+        # if self.ibm_backend is not None:
+        #     ibm_counts = self.ibm_sampler_executor.sample_measurement_counts(qc, qubit_count, shots=shots)
+        #     ibm_sampler_zero_amplitude = sample_interpreter.get_zero_amplitude(ibm_counts)
+        #     ibm_sampler_zero_probability = sample_interpreter.get_zero_probability(ibm_counts)
 
-            if not self.allow_measurement:
-                ibm_estimator_zero_amplitude, ibm_estimator_zero_probability = self.ibm_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
+        #     if not self.allow_measurement:
+        #         ibm_estimator_zero_amplitude, ibm_estimator_zero_probability = self.ibm_estimator_executor.get_amplitude_of_zero(qc, qubit_count, shots=shots)
 
         # ── assemble results ───────────────────────────────────────────────────
 
@@ -129,22 +139,31 @@ class Experiment:
             used_center_distance=used_center_distance,
             scaled_center_distance = scaled_center_distance,
             exact_result=exact_result,
+
             analitical_zero_amplitude=analitical_zero_amplitude,
             analitical_zero_probablity=analitical_zero_probablity,
             errors_for_analitical=sample_interpreter.get_errors(exact_result, analitical_zero_amplitude, analitical_zero_amplitude),
+            
             sampled_zero_amplitude=sampled_zero_amplitude,
             sampled_zero_probability=sampled_zero_probability,
             errors_for_sampled=sample_interpreter.get_errors(exact_result, sampled_zero_amplitude, analitical_zero_amplitude),
+            
             noisy_sampled_zero_amplitude=noisy_sampled_zero_amplitude,
             noisy_sampled_zero_probability=noisy_sampled_zero_probability,
             errors_for_noisy_sampled=sample_interpreter.get_errors(exact_result, noisy_sampled_zero_amplitude, analitical_zero_amplitude),
+            
             estimator_zero_amplitude=estimator_zero_amplitude,
             estimator_zero_probability=estimator_zero_probability,
             errors_for_estimator=sample_interpreter.get_errors(exact_result, estimator_zero_amplitude, analitical_zero_amplitude),
+            
             ibm_sampler_zero_amplitude=ibm_sampler_zero_amplitude,
             ibm_sampler_zero_probability=ibm_sampler_zero_probability,
             errors_for_ibm_sampler=sample_interpreter.get_errors(exact_result, ibm_sampler_zero_amplitude, analitical_zero_amplitude) if ibm_sampler_zero_amplitude is not None else None,
+            
             ibm_estimator_zero_amplitude=ibm_estimator_zero_amplitude,
             ibm_estimator_zero_probability=ibm_estimator_zero_probability,
             errors_for_ibm_estimator=sample_interpreter.get_errors(exact_result, ibm_estimator_zero_amplitude, analitical_zero_amplitude) if ibm_estimator_zero_amplitude is not None else None,
+
+            noisy_simulation_stats=noisy_simulation_stats,
+            ibm_backend_stats=ibm_backend_stats,
         )

@@ -1,0 +1,71 @@
+  Backend name         : ibm_marrakesh
+  Qubits (transpiled)  : 156
+  Depth                : 548
+  Single-qubit gates   : 771  (rz + sx + x)
+  Two-qubit gates (ecr): 0
+  T gates (logical)    : 32
+  All gate counts      : {'sx': 497, 'rz': 261, 'cz': 252, 'x': 13}
+  
+  Backend name         : ibm_marrakesh
+  Qubits (transpiled)  : 156
+  Depth                : 493
+  Single-qubit gates   : 806  (rz + sx + x)
+  Two-qubit gates (ecr): 0
+  T gates (logical)    : 32
+  All gate counts      : {'sx': 514, 'rz': 277, 'cz': 258, 'x': 15}
+  
+  Backend name         : ibm_marrakesh
+  Qubits (transpiled)  : 156
+  Depth                : 530
+  Single-qubit gates   : 803  (rz + sx + x)
+  Two-qubit gates (ecr): 0
+  T gates (logical)    : 32
+  All gate counts      : {'sx': 517, 'rz': 277, 'cz': 267, 'x': 9}
+  
+  
+  
+  
+  
+  All gate counts      : {'rz': 408, 'sx': 224, 'ecr': 136, 'x': 24}
+  Backend name         : ibm_marrakesh
+  Qubits (transpiled)  : 156
+  Depth                : 340
+  Single-qubit gates   : 462  (rz + sx + x)
+  Two-qubit gates (ecr): 0
+  T gates (logical)    : 16
+  All gate counts      : {'sx': 263, 'rz': 190, 'cz': 130, 'x': 9}
+  
+  Backend name         : ibm_marrakesh
+  Qubits (transpiled)  : 156
+  Depth                : 295
+  Single-qubit gates   : 449  (rz + sx + x)
+  Two-qubit gates (ecr): 0
+  T gates (logical)    : 16
+  All gate counts      : {'sx': 268, 'rz': 171, 'cz': 134, 'x': 10}
+  
+  
+  
+  Backend name         : ibm_marrakesh
+  Qubits (transpiled)  : 156
+  Depth                : 270
+  Single-qubit gates   : 386  (rz + sx + x)
+  Two-qubit gates (ecr): 0
+  T gates (logical)    : 16
+  All gate counts      : {'sx': 219, 'rz': 156, 'cz': 104, 'x': 11}
+  
+  Backend name         : ibm_marrakesh
+  Qubits (transpiled)  : 156
+  Depth                : 270
+  Single-qubit gates   : 364  (rz + sx + x)
+  Two-qubit gates (ecr): 0
+  T gates (logical)    : 16
+  All gate counts      : {'sx': 205, 'rz': 144, 'cz': 106, 'x': 15}
+  
+  
+  Backend name         : ibm_marrakesh
+  Qubits (transpiled)  : 156
+  Depth                : 262
+  Single-qubit gates   : 359  (rz + sx + x)
+  Two-qubit gates (ecr): 0
+  T gates (logical)    : 16
+  All gate counts      : {'sx': 205, 'rz': 141, 'cz': 107, 'x': 13}

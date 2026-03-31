@@ -64,6 +64,7 @@ class ResourceEstimator:
         ops = dict(qc_t.count_ops())
 
         return CircuitStats(
+            backend_name = backend.name if backend else "None",
             num_qubits=qc_t.num_qubits,
             depth=qc_t.depth(),
             single_qubit_gates=ops.get('rz', 0) + ops.get('sx', 0) + ops.get('x', 0),

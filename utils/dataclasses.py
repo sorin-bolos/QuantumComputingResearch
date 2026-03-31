@@ -11,6 +11,7 @@ __all__ = [
 @dataclass
 class CircuitStats:
     """Statistics for a circuit transpiled to an IBM native gate set."""
+    backend_name: str
     num_qubits: int
     depth: int
     single_qubit_gates: int   # rz + sx + x
@@ -19,6 +20,7 @@ class CircuitStats:
     gate_counts: dict
 
     def print(self):
+        print(f"  Backend name         : {self.backend_name}")
         print(f"  Qubits (transpiled)  : {self.num_qubits}")
         print(f"  Depth                : {self.depth}")
         print(f"  Single-qubit gates   : {self.single_qubit_gates}  (rz + sx + x)")
@@ -72,10 +74,16 @@ class Results:
     ibm_estimator_zero_probability: Optional[float] = None
     errors_for_ibm_estimator: Optional[Errors] = None
 
+    noisy_simulation_stats: Optional[CircuitStats] = None
+    ibm_backend_stats: Optional[CircuitStats] = None
+
     def print(self):
         print(f"  Center distance (discretized) : {self.used_center_distance}")
         print(f"  Scaled distance (in grid) : {self.scaled_center_distance}")
         print(f"  Exact result             : {self.exact_result:.6f}")
+
+        self.noisy_simulation_stats.print()
+        self.ibm_backend_stats.print()
 
         print()
         print("  ── Analytical (noiseless statevector) ──")
