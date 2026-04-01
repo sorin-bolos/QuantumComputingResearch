@@ -4,6 +4,7 @@ from typing import Optional
 __all__ = [
     "CircuitStats",
     "Errors",
+    "IntegralContext",
     "Results",
 ]
 
@@ -45,10 +46,20 @@ class Errors:
 
 
 @dataclass
-class Results:
+class IntegralContext:
     used_center_distance: float
     scaled_center_distance: int
     exact_result: float
+
+    def print(self):
+        print(f"  Center distance (discretized) : {self.used_center_distance}")
+        print(f"  Scaled distance (in grid) : {self.scaled_center_distance}")
+        print(f"  Exact result             : {self.exact_result:.6f}")
+
+
+@dataclass
+class Results:
+    context: IntegralContext
 
     analitical_zero_amplitude: float
     analitical_zero_probablity: float
@@ -78,9 +89,7 @@ class Results:
     ibm_backend_stats: Optional[CircuitStats] = None
 
     def print(self):
-        print(f"  Center distance (discretized) : {self.used_center_distance}")
-        print(f"  Scaled distance (in grid) : {self.scaled_center_distance}")
-        print(f"  Exact result             : {self.exact_result:.6f}")
+        self.context.print()
 
         self.noisy_simulation_stats.print()
         self.ibm_backend_stats.print()
