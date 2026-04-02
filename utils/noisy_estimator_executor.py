@@ -140,7 +140,7 @@ class NoisyEstimatorExecutor:
 
     # ── public API ────────────────────────────────────────────────────────────
 
-    def _get_probability_of_zero(
+    def get_estimated_expectation_value(
         self, qc: QuantumCircuit, data_qubit_count: int, shots: int
     ) -> float:
         obs = self._zero_state_projector(data_qubit_count, qc.num_qubits)
@@ -149,6 +149,28 @@ class NoisyEstimatorExecutor:
         self.estimator.options.default_shots = shots
         result = self.estimator.run([(qc_isa, obs_isa)]).result()
         return float(np.clip(result[0].data.evs, 0.0, 1.0))
+    
+    def get_probability_of_zero(self, qc: QuantumCircuit, data_qubit_count: int, shots: int = 1024) -> float:
+        """Estimate P(|0…0⟩) = ⟨ψ|(|0⟩⟨0|)^⊗n|ψ⟩ via a single EstimatorV2 call.
+
+        Parameters
+        ----------
+        qc : QuantumCircuit
+            Circuit preparing the state |ψ⟩.  Must not contain a final
+            measurement (EstimatorV2 handles measurement internally).
+        data_qubit_count : int
+            Number of data qubits (qubits 0…data_qubit_count-1).
+        shots : int, optional
+            Number of shots per circuit execution (default 1024).
+            When ZNE is enabled the total shots are multiplied by the number
+            of noise factors.
+
+        Returns
+        -------
+        float
+            Estimated probability P(|0…0⟩), clipped to [0, 1].
+        """
+        return self.get_estimated_expectation_value(qc, data_qubit_count, shots)
 
     def get_amplitude_of_zero(
         self, qc: QuantumCircuit, data_qubit_count: int, shots: int = 1024
@@ -173,5 +195,5 @@ class NoisyEstimatorExecutor:
             ``(amplitude, probability)`` where amplitude = √P(|0…0⟩) and
             probability = P(|0…0⟩), both clipped to [0, 1].
         """
-        probability = self._get_probability_of_zero(qc, data_qubit_count, shots)
+        probability = self.get_probability_of_zero(qc, data_qubit_count, shots)
         return float(np.sqrt(probability)), probability

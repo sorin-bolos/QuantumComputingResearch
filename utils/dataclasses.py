@@ -21,6 +21,7 @@ class CircuitStats:
     gate_counts: dict
 
     def print(self):
+        print()
         print(f"  Backend name         : {self.backend_name}")
         print(f"  Qubits (transpiled)  : {self.num_qubits}")
         print(f"  Depth                : {self.depth}")
@@ -52,91 +53,43 @@ class IntegralContext:
     exact_result: float
 
     def print(self):
+        print()
         print(f"  Center distance (discretized) : {self.used_center_distance}")
         print(f"  Scaled distance (in grid) : {self.scaled_center_distance}")
         print(f"  Exact result             : {self.exact_result:.6f}")
+
+@dataclass
+class RunResults:
+    run_name: str
+    run_result: float
+
+    def print(self):
+        print()
+        print(f"  {self.run_name} result : {self.run_result:.6f}")
+
+@dataclass
+class SimulationResults:
+    name: str
+    result: float
+    errors: Errors
+
+    def print(self):
+        print()
+        print(f"  {self.name} result : {self.result:.6f}")
+        self.errors.print()
 
 
 @dataclass
 class Results:
     context: IntegralContext
-
-    analitical_zero_amplitude: float
-    analitical_zero_probablity: float
-    errors_for_analitical: Errors
-
-    sampled_zero_amplitude: float = None
-    sampled_zero_probability: float = None
-    errors_for_sampled: Errors = None
-
-    noisy_sampled_zero_amplitude: float = None
-    noisy_sampled_zero_probability: float = None
-    errors_for_noisy_sampled: Errors = None
-
-    estimator_zero_amplitude: Optional[float] = None
-    estimator_zero_probability: Optional[float] = None
-    errors_for_estimator: Optional[Errors] = None
-
-    ibm_sampler_zero_amplitude: Optional[float] = None
-    ibm_sampler_zero_probability: Optional[float] = None
-    errors_for_ibm_sampler: Optional[Errors] = None
-
-    ibm_estimator_zero_amplitude: Optional[float] = None
-    ibm_estimator_zero_probability: Optional[float] = None
-    errors_for_ibm_estimator: Optional[Errors] = None
-
-    noisy_simulation_stats: Optional[CircuitStats] = None
-    ibm_backend_stats: Optional[CircuitStats] = None
+    stats: list[CircuitStats]
+    results: list[RunResults]
 
     def print(self):
         self.context.print()
-
-        self.noisy_simulation_stats.print()
-        self.ibm_backend_stats.print()
+        for stat in self.stats:
+            stat.print()
 
         print()
-        print("  ── Analytical (noiseless statevector) ──")
-        print(f"  Amplitude    : {self.analitical_zero_amplitude:.6f}")
-        print(f"  Probability  : {self.analitical_zero_probablity:.6f}")
-        if self.errors_for_analitical is not None:
-            self.errors_for_analitical.print()
-
-        if self.sampled_zero_amplitude is not None:
-            print()
-            print("  ── Sampled (noiseless shot-based) ──")
-            print(f"  Amplitude    : {self.sampled_zero_amplitude:.6f}")
-            print(f"  Probability  : {self.sampled_zero_probability:.6f}")
-            if self.errors_for_sampled is not None:
-                self.errors_for_sampled.print()
-
-        if self.noisy_sampled_zero_amplitude is not None:
-            print()
-            print("  ── Noisy sampler (fake backend) ──")
-            print(f"  Amplitude    : {self.noisy_sampled_zero_amplitude:.6f}")
-            print(f"  Probability  : {self.noisy_sampled_zero_probability:.6f}")
-            if self.errors_for_noisy_sampled is not None:
-                self.errors_for_noisy_sampled.print()
-
-        if self.estimator_zero_amplitude is not None:
-            print()
-            print("  ── Noisy estimator + ZNE (fake backend) ──")
-            print(f"  Amplitude    : {self.estimator_zero_amplitude:.6f}")
-            print(f"  Probability  : {self.estimator_zero_probability:.6f}")
-            if self.errors_for_estimator is not None:
-                self.errors_for_estimator.print()
-
-        if self.ibm_sampler_zero_amplitude is not None:
-            print()
-            print("  ── IBM hardware sampler ──")
-            print(f"  Amplitude    : {self.ibm_sampler_zero_amplitude:.6f}")
-            print(f"  Probability  : {self.ibm_sampler_zero_probability:.6f}")
-            if self.errors_for_ibm_sampler is not None:
-                self.errors_for_ibm_sampler.print()
-
-        if self.ibm_estimator_zero_amplitude is not None:
-            print()
-            print("  ── IBM hardware estimator + ZNE ──")
-            print(f"  Amplitude    : {self.ibm_estimator_zero_amplitude:.6f}")
-            print(f"  Probability  : {self.ibm_estimator_zero_probability:.6f}")
-            if self.errors_for_ibm_estimator is not None:
-                self.errors_for_ibm_estimator.print()
+        for result in self.results:
+            result.print()
