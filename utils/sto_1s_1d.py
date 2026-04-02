@@ -1,9 +1,9 @@
 from qiskit import QuantumCircuit
 import numpy as np
 from scipy.linalg import null_space
-from qiskit.circuit.library import UnitaryGate
 
 from utils.arithmetic import ArithmeticOperator
+from utils.matrix_product_states import Mps
 
 
 class Sto1S:
@@ -72,17 +72,17 @@ class Sto1S:
     def get_sto_1s_spherical_dagger(self, qubit_count: int, decay_constant: float) -> QuantumCircuit:
         return self.get_sto_1s_spherical(qubit_count, decay_constant).inverse()
 
-    def get_sto_1s_1d_derivative(self, qubit_count: int, decay_constant: float, center_offset: float) -> QuantumCircuit:
-        """Prepares |ψ'⟩ ∝ -sign(x-r)·e^(-a|x-r|)
-
-        This is the derivative of the STO with respect to x (up to normalisation).
-        Returns a circuit with qubit_count+2 qubits: data on 0..n-1, bond on n and n+1.
-        """
-        n = qubit_count
-        xs = np.arange(2**n, dtype=float)
-        psi = -np.sign(xs - center_offset) * np.exp(-decay_constant * np.abs(xs - center_offset))
-        psi /= np.linalg.norm(psi)
-        return Sto1S._mps_circuit(n, psi)
+    def get_sto_1s_1d_potential_cartesian(self, qubit_count: int, decay_constant: float, center_offset: float, potential_offset: float, max_range: int) -> QuantumCircuit:
+        
+        def potential_times_s1(x):
+            s1 = np.exp(-decay_constant * np.abs(x - center_offset))
+            V = 1 / np.abs(x - potential_offset)
+            f = V * s1
+            return f
+        
+        mps = Mps(potential_times_s1)
+        qc = mps.generate_mps_circuit(qubit_count, max_range)
+        return qc
 
 
 
