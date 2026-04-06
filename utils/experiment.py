@@ -302,7 +302,7 @@ class Experiment:
         qc = integrals.get_s1_s2_overlap_3d_circuit(qubit_count, scaled_decay_constant)
 
         stats = self._get_circuit_stats(qc)
-        raw_results = self._run_all_methods(qc, qubit_count, shots)
+        raw_results = self._run_all_methods(qc, qc.num_qubits, shots)
         
         simulation_results = []
         analitical_result = None
@@ -321,8 +321,7 @@ class Experiment:
             context=context,
             stats=stats,
             results=simulation_results
-        )
-    
+        ) 
     
     def run_s2_s1_3d_overlap_integral(
             self,
@@ -345,7 +344,7 @@ class Experiment:
         qc = integrals.get_s2_s1_overlap_3d_circuit(qubit_count, scaled_decay_constant)
 
         stats = self._get_circuit_stats(qc)
-        raw_results = self._run_all_methods(qc, qubit_count, shots)
+        raw_results = self._run_all_methods(qc, qc.num_qubits, shots)
         
         simulation_results = []
         analitical_result = None
@@ -387,7 +386,7 @@ class Experiment:
         qc = integrals.get_s1_s1_overlap_3d_circuit(qubit_count, scaled_decay_constant)
 
         stats = self._get_circuit_stats(qc)
-        raw_results = self._run_all_methods(qc, qubit_count, shots)
+        raw_results = self._run_all_methods(qc, qc.num_qubits, shots)
         
         simulation_results = []
         analitical_result = None
@@ -429,7 +428,7 @@ class Experiment:
         qc = integrals.get_s2_s2_overlap_3d_circuit(qubit_count, scaled_decay_constant)
 
         stats = self._get_circuit_stats(qc)
-        raw_results = self._run_all_methods(qc, qubit_count, shots)
+        raw_results = self._run_all_methods(qc, qc.num_qubits, shots)
         
         simulation_results = []
         analitical_result = None
