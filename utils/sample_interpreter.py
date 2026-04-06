@@ -108,13 +108,13 @@ class SampleInterpreter:
 
     def get_errors(self, theoretical: float, sampled: float, statevector_result: float):
         error_vs_continuous = abs(sampled - theoretical)
-        percent_error_vs_continuous = error_vs_continuous/theoretical*100
+        percent_error_vs_continuous = error_vs_continuous/theoretical*100 if theoretical != 0 else 0.0
 
         if statevector_result:
             discretisation_error = abs(statevector_result  - theoretical)
-            percent_discretisation_error = discretisation_error/theoretical*100
+            percent_discretisation_error = discretisation_error/theoretical*100 if theoretical != 0 else 0.0
             shot_noise = abs(sampled - statevector_result)
-            percent_shot_noise = shot_noise/statevector_result*100
+            percent_shot_noise = shot_noise/statevector_result*100 if statevector_result != 0 else 0.0
 
         return Errors(
             error_vs_continuous = error_vs_continuous,

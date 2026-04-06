@@ -281,11 +281,10 @@ class Experiment:
             results=simulation_results
         )
     
-    def run_single_V11A_1D_integral(
+    def run_s1_s2_3d_overlap_integral(
             self,
             qubit_count: int,
             decay_constant: float,
-            Z: float,
             max_range: int, # the size of the space that will be represented by 2^qubit_count values
             shots: int = 1024) -> Results:
 
@@ -294,31 +293,154 @@ class Experiment:
         
         integrals = Integals(self.allow_measurement, self.optimize_t_gates)
 
-        exact_result = integrals.get_V11B_1D_exact(decay_constant, 1.375)
-
         context = IntegralContext(
             used_center_distance=None,
             scaled_center_distance=None,
-            exact_result=exact_result,
+            exact_result=0.0,
         )
 
-        qc = integrals.get_V11B_1D_circuit(qubit_count, scaled_decay_constant, decay_constant, max_range)
+        qc = integrals.get_s1_s2_overlap_3d_circuit(qubit_count, scaled_decay_constant)
 
         stats = self._get_circuit_stats(qc)
-        raw_results = self._run_all_methods(qc, qubit_count, shots, run_noisy_estimation=False, run_noisy_simulation=False)
+        raw_results = self._run_all_methods(qc, qubit_count, shots)
         
         simulation_results = []
         analitical_result = None
         for run_result in raw_results:
-            result = -1 * Z * run_result.run_result
-
             if run_result.run_name == "Analytical (statevector)":
-                analitical_result = result
+                analitical_result = run_result.run_result
 
-            errors = self._get_errors(context.exact_result, result, analitical_result)
+            errors = self._get_errors(context.exact_result, run_result.run_result, analitical_result)
             simulation_results.append(SimulationResults(
                 name=run_result.run_name,
-                result=result,
+                result=run_result.run_result,
+                errors=errors
+            ))
+
+        return Results(
+            context=context,
+            stats=stats,
+            results=simulation_results
+        )
+    
+    
+    def run_s2_s1_3d_overlap_integral(
+            self,
+            qubit_count: int,
+            decay_constant: float,
+            max_range: int, # the size of the space that will be represented by 2^qubit_count values
+            shots: int = 1024) -> Results:
+
+        scale = (2 ** qubit_count) / max_range
+        scaled_decay_constant = decay_constant / scale
+        
+        integrals = Integals(self.allow_measurement, self.optimize_t_gates)
+
+        context = IntegralContext(
+            used_center_distance=None,
+            scaled_center_distance=None,
+            exact_result=0.0,
+        )
+
+        qc = integrals.get_s2_s1_overlap_3d_circuit(qubit_count, scaled_decay_constant)
+
+        stats = self._get_circuit_stats(qc)
+        raw_results = self._run_all_methods(qc, qubit_count, shots)
+        
+        simulation_results = []
+        analitical_result = None
+        for run_result in raw_results:
+            if run_result.run_name == "Analytical (statevector)":
+                analitical_result = run_result.run_result
+
+            errors = self._get_errors(context.exact_result, run_result.run_result, analitical_result)
+            simulation_results.append(SimulationResults(
+                name=run_result.run_name,
+                result=run_result.run_result,
+                errors=errors
+            ))
+
+        return Results(
+            context=context,
+            stats=stats,
+            results=simulation_results
+        )
+    
+    def run_s1_s1_3d_overlap_integral(
+            self,
+            qubit_count: int,
+            decay_constant: float,
+            max_range: int, # the size of the space that will be represented by 2^qubit_count values
+            shots: int = 1024) -> Results:
+
+        scale = (2 ** qubit_count) / max_range
+        scaled_decay_constant = decay_constant / scale
+        
+        integrals = Integals(self.allow_measurement, self.optimize_t_gates)
+
+        context = IntegralContext(
+            used_center_distance=None,
+            scaled_center_distance=None,
+            exact_result=1.0,
+        )
+
+        qc = integrals.get_s1_s1_overlap_3d_circuit(qubit_count, scaled_decay_constant)
+
+        stats = self._get_circuit_stats(qc)
+        raw_results = self._run_all_methods(qc, qubit_count, shots)
+        
+        simulation_results = []
+        analitical_result = None
+        for run_result in raw_results:
+            if run_result.run_name == "Analytical (statevector)":
+                analitical_result = run_result.run_result
+
+            errors = self._get_errors(context.exact_result, run_result.run_result, analitical_result)
+            simulation_results.append(SimulationResults(
+                name=run_result.run_name,
+                result=run_result.run_result,
+                errors=errors
+            ))
+
+        return Results(
+            context=context,
+            stats=stats,
+            results=simulation_results
+        )
+    
+    def run_s2_s2_3d_overlap_integral(
+            self,
+            qubit_count: int,
+            decay_constant: float,
+            max_range: int, # the size of the space that will be represented by 2^qubit_count values
+            shots: int = 1024) -> Results:
+
+        scale = (2 ** qubit_count) / max_range
+        scaled_decay_constant = decay_constant / scale
+        
+        integrals = Integals(self.allow_measurement, self.optimize_t_gates)
+
+        context = IntegralContext(
+            used_center_distance=None,
+            scaled_center_distance=None,
+            exact_result=1.0,
+        )
+
+        qc = integrals.get_s2_s2_overlap_3d_circuit(qubit_count, scaled_decay_constant)
+
+        stats = self._get_circuit_stats(qc)
+        raw_results = self._run_all_methods(qc, qubit_count, shots)
+        
+        simulation_results = []
+        analitical_result = None
+        for run_result in raw_results:
+            if run_result.run_name == "Analytical (statevector)":
+                analitical_result = run_result.run_result
+
+            errors = self._get_errors(context.exact_result, run_result.run_result, analitical_result)
+            simulation_results.append(SimulationResults(
+                name=run_result.run_name,
+                result=run_result.run_result,
                 errors=errors
             ))
 

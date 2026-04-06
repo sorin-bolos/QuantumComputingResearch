@@ -56,3 +56,46 @@ class Integals:
         print(type(qc))
         return qc
     
+    def get_s1_s2_overlap_3d_circuit(self, qubit_count, decay_constant):
+        from utils.sto_1s_1d import Sto1S
+        from utils.sto_2s_1d import Sto2S
+
+        s1_generator = Sto1S(self.allow_measurements, self.optimize_t_gates)
+        s2_generator = Sto2S(self.allow_measurements, self.optimize_t_gates)
+
+        s1_3d = s1_generator.get_sto_1s_spherical_jacobian(qubit_count, decay_constant)
+        s2_3d_dagger = s2_generator.get_sto_2s_spherical_jacobian_dagger(qubit_count, decay_constant)
+
+        return self.ch.concatenate(s1_3d, s2_3d_dagger)
+    
+    def get_s2_s1_overlap_3d_circuit(self, qubit_count, decay_constant):
+        from utils.sto_1s_1d import Sto1S
+        from utils.sto_2s_1d import Sto2S
+
+        s1_generator = Sto1S(self.allow_measurements, self.optimize_t_gates)
+        s2_generator = Sto2S(self.allow_measurements, self.optimize_t_gates)
+
+        s2_3d = s2_generator.get_sto_2s_spherical_jacobian(qubit_count, decay_constant)
+        s1_3d_dagger = s1_generator.get_sto_1s_spherical_jacobian_dagger(qubit_count, decay_constant)
+
+        return self.ch.concatenate(s2_3d,s1_3d_dagger)
+    
+    def get_s2_s2_overlap_3d_circuit(self, qubit_count, decay_constant):
+        from utils.sto_2s_1d import Sto2S
+
+        s2_generator = Sto2S(self.allow_measurements, self.optimize_t_gates)
+
+        s2_3d = s2_generator.get_sto_2s_spherical_jacobian(qubit_count, decay_constant)
+        s2_3d_dagger = s2_generator.get_sto_2s_spherical_jacobian_dagger(qubit_count, decay_constant)
+
+        return self.ch.concatenate(s2_3d, s2_3d_dagger)
+    
+    def get_s1_s1_overlap_3d_circuit(self, qubit_count, decay_constant):
+        from utils.sto_1s_1d import Sto1S
+
+        s1_generator = Sto1S(self.allow_measurements, self.optimize_t_gates)
+
+        s1_3d = s1_generator.get_sto_1s_spherical_jacobian(qubit_count, decay_constant)
+        s1_3d_dagger = s1_generator.get_sto_1s_spherical_jacobian_dagger(qubit_count, decay_constant)
+
+        return self.ch.concatenate(s1_3d, s1_3d_dagger)
