@@ -4,24 +4,10 @@ from qiskit.quantum_info import Statevector
 from qiskit.circuit.library import UnitaryGate
 
 class Mps:
-    def __init__(self, function_1d):
-        self.function_1d = function_1d
-
-    def get_discretized_function(self, n_qubits, max_range):
-        num_points = 2 ** n_qubits
-        step_size = max_range / num_points
-        points = np.arange(num_points) * step_size + step_size/2  # cell centers, avoiding x=0
-
-        return [self.function_1d(point) for point in points]
+    def __init__(self):
+        pass
     
-    def get_normalized_amplitudes(self, n_qubits, max_range):
-        func_values = self.get_discretized_function(n_qubits, max_range)
-        norm = np.linalg.norm(func_values)
-        if norm < 1e-30:
-            return np.zeros_like(func_values)
-        return func_values / norm
-    
-    def compute_max_bond_dimension(self, n_qubits, max_range, threshold=1e-12):
+    def compute_max_bond_dimension(self, function_1d, n_qubits, max_range, threshold=1e-12):
         """
         Compute the maximum MPS bond dimension across all bipartitions
         of an amplitude-encoded 1D function on n_qubits.
@@ -31,7 +17,7 @@ class Mps:
         We compute the SVD across every bipartition and find the max
         number of singular values above threshold.
         """
-        psi = self.get_normalized_amplitudes(n_qubits, max_range)
+        psi = self._get_normalized_amplitudes(function_1d, n_qubits, max_range)
         
         max_chi = 1
         for cut in range(1, n_qubits):
@@ -62,11 +48,30 @@ class Mps:
         fidelity = np.abs(np.vdot(psi_target, psi_circ_n))**2
         return fidelity, leakage, psi_circ_n
     
-    def generate_mps_circuit(self, n_qubits, max_range, label='mps'):
-        normalized_f = self.get_normalized_amplitudes(n_qubits, max_range)
+    def generate_mps_circuit_from_function(self, function_1d, n_qubits, max_range, label='mps'):
+        normalized_f = self._get_normalized_amplitudes(function_1d, n_qubits, max_range)
         tensors = self._decompose_to_mps_right_canonical(n_qubits, normalized_f)
         qc = self._build_mps_circuit(tensors, n_qubits, label)
         return qc
+    
+    def generate_mps_circuit_from_tensors(self, tensors, n_qubits, label='mps'):
+        righ_canonical = self._right_canonicalize_tensors(tensors)
+        qc = self._build_mps_circuit(righ_canonical, n_qubits, label)
+        return qc
+
+    def _get_discretized_function(self, function_1d, n_qubits, max_range):
+        num_points = 2 ** n_qubits
+        step_size = max_range / num_points
+        points = np.arange(num_points) * step_size + step_size/2  # cell centers, avoiding x=0
+
+        return [function_1d(point) for point in points]
+    
+    def _get_normalized_amplitudes(self, function_1d, n_qubits, max_range):
+        func_values = self._get_discretized_function(function_1d, n_qubits, max_range)
+        norm = np.linalg.norm(func_values)
+        if norm < 1e-30:
+            return np.zeros_like(func_values)
+        return func_values / norm
     
     def _decompose_to_mps_right_canonical(self, n_qubits, normalized_f, threshold=1e-12) -> list:
         """
@@ -218,8 +223,7 @@ class Mps:
             raise ValueError(f"Unitary error = {err:.2e}")
     
         return U
- 
-    
+     
     def _build_mps_circuit(self, tensors, n_qubits, label='mps') -> QuantumCircuit:
         """
         Build circuit from MPS tensors.
@@ -247,3 +251,55 @@ class Mps:
             qc.append(gate, target)
     
         return qc
+    
+    def _right_canonicalize_tensors(self, tensors):
+        """Bring MPS tensors into right-canonical form via a right-to-left QR sweep.
+
+        After this, each tensor satisfies  sum_s A^s (A^s)† = I
+        (rows of the matricised tensor are orthonormal), making
+        the map  |alpha_L> -> sum_{s,aR} A[aL,s,aR] |s,aR>  an isometry.
+
+        Cost: O(n) with constant-size matrix operations (at most 4x4).
+        """
+        n = len(tensors)
+        rc = [t.copy().astype(complex) for t in tensors]
+
+        for k in range(n - 1, 0, -1):
+            chi_L, d, chi_R = rc[k].shape
+            M = rc[k].reshape(chi_L, d * chi_R)   # shape (chi_L, d*chi_R)
+
+            # LQ decomposition via QR of conjugate transpose
+            # M^H = Q_qr R_qr  =>  M = R_qr^H Q_qr^H  =  L @ Q
+            Q_qr, R_qr = np.linalg.qr(M.conj().T)
+            L = R_qr.conj().T    # shape (chi_L, chi_new)
+            Q = Q_qr.conj().T    # shape (chi_new, d*chi_R)
+
+            chi_new = Q.shape[0]
+            rc[k] = Q.reshape(chi_new, d, chi_R)
+
+            # Absorb L into previous tensor
+            pL, pd, pR = rc[k - 1].shape
+            prev_mat = rc[k - 1].reshape(pL * pd, pR)
+            rc[k - 1] = (prev_mat @ L).reshape(pL, pd, chi_new)
+
+        return rc
+    
+    # def _mps_circuit_from_right_canonical_tensors(self, tensors, n_qubits):
+    #     """Build a quantum circuit from right-canonical MPS tensors.
+
+    #     Layout:  data qubits 0..n-1  |  bond qubits n..n+n_bond-1
+    #     """
+    #     max_chi = max(max(t.shape[0], t.shape[2]) for t in tensors)
+    #     n_bond  = int(np.ceil(np.log2(max(max_chi, 2))))
+    #     dim_bond = 2 ** n_bond
+
+    #     qc = QuantumCircuit(n_qubits + n_bond)
+    #     bond_qubits = list(range(n_qubits, n_qubits + n_bond))
+
+    #     for k, A in enumerate(tensors):
+    #         U = self._mps_tensor_to_unitary(A, dim_bond)
+    #         phys_qubit = n_qubits - 1 - k
+    #         gate = UnitaryGate(U, label=f'MPS[{k}]')
+    #         qc.append(gate, bond_qubits + [phys_qubit])
+
+    #     return qc

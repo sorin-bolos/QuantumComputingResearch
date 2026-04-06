@@ -80,30 +80,30 @@ class Sto1S:
             f = V * s1
             return f
         
-        mps = Mps(potential_times_s1)
-        qc = mps.generate_mps_circuit(qubit_count, max_range)
+        mps = Mps()
+        qc = mps.generate_mps_circuit_from_function(potential_times_s1, qubit_count, max_range)
         return qc
     
     def get_sto_1s_1d_potential_cartesian_dagger(self, qubit_count: int, decay_constant: float, center_offset: float, potential_offset: float, max_range: int) -> QuantumCircuit:
         return self.get_sto_1s_1d_potential_cartesian(qubit_count, decay_constant, center_offset, potential_offset, max_range).inverse()
     
     def get_sto_1s_spherical_jacobian(self, qubit_count: int, decay_constant: float) -> QuantumCircuit:
-        return self._analytical_mps_1s_jacobian(qubit_count, decay_constant)
-    
-    def get_sto_1s_spherical_jacobian_dagger(self, qubit_count: int, decay_constant: float) -> QuantumCircuit:
-        return self.get_sto_1s_spherical_jacobian(qubit_count, decay_constant).inverse()
+        mps = Mps()
+        tensors = Sto1S._get_analytical_1s_jacobian_mps_tensors(qubit_count, decay_constant)
+        return mps.generate_mps_circuit_from_tensors(tensors, qubit_count)
 
+    def get_sto_1s_spherical_jacobian_dagger(self, qubit_count: int, decay_constant: float) -> QuantumCircuit:
+        return self.get_sto_1s_spherical_jacobian(qubit_count, decay_constant).inverse()   
 
     @staticmethod
     def _sto_1s_spherical(qubit_count: int, alpha: float) -> QuantumCircuit:
         """Returns a circuit that prepares the state |ψ⟩ = N · Σ e^(-alpha·|i|) |i⟩."""
         qc = QuantumCircuit(qubit_count)
-        last_qubit = qubit_count - 1
 
         b = alpha
-        for i in range(qubit_count-1):
+        for i in range(qubit_count):
             theta = 2 * np.arctan(np.exp(-b))
-            qc.cry(theta, last_qubit, i)
+            qc.ry(theta, i)
             b = b * 2
 
         return qc
@@ -178,7 +178,7 @@ class Sto1S:
         return qc
     
     @staticmethod
-    def _norm_sq_xe_neg_ax(n, alpha):
+    def _norm_sq_xe_neg_ax(qubit_count: int, alpha: float) -> float:
         """Compute sum_{x=0}^{2^n-1} (x * exp(-alpha*x))^2  in O(n)
         via MPS transfer matrix contraction.
 
@@ -190,9 +190,9 @@ class Sto1S:
         # v_L = (1,0) x (1,0)  ->  (1,0,0,0)
         w = np.array([1.0, 0.0, 0.0, 0.0])
 
-        for k in range(n):
-            p = 2.0 ** (n - 1 - k)
-            e2 = np.exp(-2 * alpha * p)     # e_k^2 = exp(-2*alpha*2^{n-1-k})
+        for k in range(qubit_count):
+            p = 2.0 ** (qubit_count - 1 - k)
+            e2 = np.exp(-2 * alpha * p)     # e_k^2 = exp(-2*alpha*2^{qubit_count-1-k})
 
             # T_k = I_4  +  e_k^2 * (M_k kron M_k)
             # where M_k = [[1, p], [0, 1]]
@@ -207,9 +207,9 @@ class Sto1S:
 
         # v_R = (0,1) x (0,1)  ->  (0,0,0,1)
         return w[3]
-    
+
     @staticmethod
-    def _analytical_mps_1s_jacobian(n, alpha):
+    def _get_analytical_1s_jacobian_mps_tensors(qubit_count: int, alpha: float):
         """Construct MPS tensors for |psi> = (1/N) sum_x x*exp(-alpha*x) |x> analytically.
 
         Bond dimension is exactly 2 for any n and any alpha > 0.
@@ -221,18 +221,18 @@ class Sto1S:
 
         where e_k = exp(-alpha * 2^(n-1-k)) and w_k = 2^(n-1-k) / N.
         """
-        norm_sq = Sto1S._norm_sq_xe_neg_ax(n, alpha)
+        norm_sq = Sto1S._norm_sq_xe_neg_ax(qubit_count, alpha)
         norm = np.sqrt(norm_sq)
 
-        if n == 1:
+        if qubit_count == 1:
             e0 = np.exp(-alpha)
             A = np.zeros((1, 2, 1))
             A[0, 1, 0] = e0 / norm
             return [A]
 
         tensors = []
-        for k in range(n):
-            p_k = 2.0 ** (n - 1 - k)
+        for k in range(qubit_count):
+            p_k = 2.0 ** (qubit_count - 1 - k)
             e_k = np.exp(-alpha * p_k)
             w_k = p_k / norm
 
@@ -241,7 +241,7 @@ class Sto1S:
                 A = np.zeros((1, 2, 2))
                 A[0, 0, :] = [1.0, 0.0]
                 A[0, 1, :] = [e_k, e_k * w_k]
-            elif k == n - 1:
+            elif k == qubit_count - 1:
                 # Right boundary: absorb (0, 1)^T column vector
                 A = np.zeros((2, 2, 1))
                 A[:, 0, 0] = [0.0, 1.0]
