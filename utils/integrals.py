@@ -84,8 +84,48 @@ class Integals:
         scaled_center_offset = 2**qubit_count // 2
 
         s1_generator = Sto1S(self.allow_measurements, self.optimize_t_gates)
-        #V11A_circuit = s1_generator.get_sto_1s_1d_potential_cartesian(qubit_count, decay_constant, max_range/2, max_range/2, max_range)
-        s1_1d = s1_generator.get_sto_1s_1d_carthesian(qubit_count, scaled_decay_constant, scaled_center_offset)
-        s1_1d_d = s1_generator.get_sto_1s_1d_carthesian_dagger(qubit_count, scaled_decay_constant, scaled_center_offset)
+        V11A_circuit = s1_generator.get_sto_1s_1d_potential_cartesian(8, 1, 8, 8, 16) #(qubit_count, decay_constant, max_range/2, max_range/2, max_range)
+        # V11A_circuit_dagger = s1_generator.get_sto_1s_1d_potential_cartesian_dagger(qubit_count, decay_constant, max_range/2, max_range/2, max_range)
+        # s1_1d = s1_generator.get_sto_1s_1d_carthesian(qubit_count, scaled_decay_constant, scaled_center_offset)
+        s1_1d_d = s1_generator.get_sto_1s_1d_carthesian_dagger(8, 1/16, 128)#(qubit_count, scaled_decay_constant, scaled_center_offset)
 
-        return self.ch.concatenate(s1_1d, s1_1d_d)
+        return self.ch.concatenate(V11A_circuit, s1_1d_d)
+
+    def get_V11B_1D_circuit(self, qubit_count, scaled_decay_constant, decay_constant, max_range):
+        from utils.sto_1s_1d import Sto1S
+
+        scaled_center_offset = 2**qubit_count // 2
+
+        s1_generator = Sto1S(self.allow_measurements, self.optimize_t_gates)
+        V11A_circuit = s1_generator.get_sto_1s_1d_potential_cartesian(8, 1, 8, 9.375, 16) #(qubit_count, decay_constant, max_range/2, max_range/2, max_range)
+        # V11A_circuit_dagger = s1_generator.get_sto_1s_1d_potential_cartesian_dagger(qubit_count, decay_constant, max_range/2, max_range/2, max_range)
+        # s1_1d = s1_generator.get_sto_1s_1d_carthesian(qubit_count, scaled_decay_constant, scaled_center_offset)
+        s1_1d_d = s1_generator.get_sto_1s_1d_carthesian_dagger(8, 1/16, 128)#(qubit_count, scaled_decay_constant, scaled_center_offset)
+
+        return self.ch.concatenate(V11A_circuit, s1_1d_d)
+
+    def get_V12_1_1D_circuit(self, qubit_count, scaled_decay_constant, decay_constant, max_range):
+        from utils.sto_1s_1d import Sto1S
+
+        scaled_center_offset = 2**qubit_count // 2
+
+        s1_generator = Sto1S(self.allow_measurements, self.optimize_t_gates)
+        V11A_circuit = s1_generator.get_sto_1s_1d_potential_cartesian(8, 1, 9.375, 8, 16) #(qubit_count, decay_constant, max_range/2, max_range/2, max_range)
+        # V11A_circuit_dagger = s1_generator.get_sto_1s_1d_potential_cartesian_dagger(qubit_count, decay_constant, max_range/2, max_range/2, max_range)
+        # s1_1d = s1_generator.get_sto_1s_1d_carthesian(qubit_count, scaled_decay_constant, scaled_center_offset)
+        s1_1d_d = s1_generator.get_sto_1s_1d_carthesian_dagger(8, 1/16, 128)#(qubit_count, scaled_decay_constant, scaled_center_offset)
+
+        return self.ch.concatenate(V11A_circuit, s1_1d_d)
+    
+    def get_V12_2_1D_circuit(self, qubit_count, scaled_decay_constant, decay_constant, max_range):
+        from utils.sto_1s_1d import Sto1S
+
+        scaled_center_offset = 2**qubit_count // 2
+
+        s1_generator = Sto1S(self.allow_measurements, self.optimize_t_gates)
+        V11A_circuit = s1_generator.get_sto_1s_1d_potential_cartesian(8, 1, 9.375, 9.375, 16) #(qubit_count, decay_constant, max_range/2, max_range/2, max_range)
+        # V11A_circuit_dagger = s1_generator.get_sto_1s_1d_potential_cartesian_dagger(qubit_count, decay_constant, max_range/2, max_range/2, max_range)
+        # s1_1d = s1_generator.get_sto_1s_1d_carthesian(qubit_count, scaled_decay_constant, scaled_center_offset)
+        s1_1d_d = s1_generator.get_sto_1s_1d_carthesian_dagger(8, 1/16, 128)#(qubit_count, scaled_decay_constant, scaled_center_offset)
+
+        return self.ch.concatenate(V11A_circuit, s1_1d_d)

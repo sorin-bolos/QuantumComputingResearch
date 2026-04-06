@@ -294,7 +294,7 @@ class Experiment:
         
         integrals = Integals(self.allow_measurement, self.optimize_t_gates)
 
-        exact_result = integrals.get_V11A_1D_exact(decay_constant)
+        exact_result = integrals.get_V11B_1D_exact(decay_constant, 1.375)
 
         context = IntegralContext(
             used_center_distance=None,
@@ -302,10 +302,10 @@ class Experiment:
             exact_result=exact_result,
         )
 
-        qc = integrals.get_V11A_1D_circuit(qubit_count, scaled_decay_constant, decay_constant, max_range)
+        qc = integrals.get_V11B_1D_circuit(qubit_count, scaled_decay_constant, decay_constant, max_range)
 
         stats = self._get_circuit_stats(qc)
-        raw_results = self._run_all_methods(qc, qubit_count, shots)
+        raw_results = self._run_all_methods(qc, qubit_count, shots, run_noisy_estimation=False, run_noisy_simulation=False)
         
         simulation_results = []
         analitical_result = None
