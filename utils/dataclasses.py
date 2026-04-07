@@ -43,7 +43,7 @@ class Errors:
     def print(self):
         print(f"  Error vs continuous  : {self.error_vs_continuous:.6f}  ({self.percent_error_vs_continuous:.2f} %)")
         print(f"  Discretisation error : {self.discretisation_error:.6f}  ({self.percent_discretisation_error:.2f} %)")
-        print(f"  Shot noise           : {self.shot_noise:.6f}  ({self.percent_shot_noise:.2f} %)")
+        print(f"  Noise           : {self.shot_noise:.6f}  ({self.percent_shot_noise:.2f} %)")
 
 
 @dataclass

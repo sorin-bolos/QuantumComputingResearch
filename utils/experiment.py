@@ -147,7 +147,7 @@ class Experiment:
         qc = self.integrals.get_s1_1d_kinetic_derivative(qubit_count, scaled_decay_constant, scaled_center_distance)
 
         stats = self._get_circuit_stats(qc)
-        raw_results = self._run_all_methods(qc, qubit_count, shots)
+        raw_results = self._run_all_methods(qc, qc.num_qubits, shots)
         
         simulation_results = []
         analitical_result = None
