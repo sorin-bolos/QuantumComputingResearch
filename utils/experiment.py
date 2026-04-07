@@ -1,3 +1,6 @@
+from qiskit import QuantumCircuit
+
+from utils import integrals
 from utils.integrals import Integals
 from utils.simulation_excutor import SimulationExecutor
 from utils.sample_interpreter import SampleInterpreter
@@ -73,6 +76,7 @@ class Experiment:
             self.ibm_estimator_executor = None
 
         self.resource_estimator = ResourceEstimator()
+        self.integrals = Integals(allow_measurement, optimize_t_gates)
 
     def run_single_s1_1d_overlap_integral(
             self,
@@ -85,11 +89,9 @@ class Experiment:
         scale = (2 ** qubit_count) / max_range
         scaled_center_distance = round(center_distance * scale)
         scaled_decay_constant = decay_constant / scale
-        
-        integrals = Integals(self.allow_measurement, self.optimize_t_gates)
 
         used_center_distance = scaled_center_distance / scale
-        exact_result = integrals.get_1s_1d_overlap_exact_result(decay_constant, used_center_distance)
+        exact_result = self.integrals.get_1s_1d_overlap_exact_result(decay_constant, used_center_distance)
 
         context = IntegralContext(
             used_center_distance=used_center_distance,
@@ -97,7 +99,7 @@ class Experiment:
             exact_result=exact_result,
         )
 
-        qc = integrals.get_s1_1d_overlap_circuit(qubit_count, scaled_decay_constant, scaled_center_distance)
+        qc = self.integrals.get_s1_1d_overlap_circuit(qubit_count, scaled_decay_constant, scaled_center_distance)
 
         stats = self._get_circuit_stats(qc)
         raw_results = self._run_all_methods(qc, qubit_count, shots)
@@ -132,11 +134,9 @@ class Experiment:
         scale = (2 ** qubit_count) / max_range
         scaled_center_distance = round(center_distance * scale)
         scaled_decay_constant = decay_constant / scale
-        
-        integrals = Integals(self.allow_measurement, self.optimize_t_gates)
 
         used_center_distance = scaled_center_distance / scale
-        exact_result = integrals.get_1s_1d_kinetic_exact_result(decay_constant, used_center_distance)
+        exact_result = self.integrals.get_1s_1d_kinetic_exact_result(decay_constant, used_center_distance)
 
         context = IntegralContext(
             used_center_distance=used_center_distance,
@@ -144,7 +144,7 @@ class Experiment:
             exact_result=exact_result,
         )
 
-        qc = integrals.get_s1_1d_kinetic_derivative(qubit_count, scaled_decay_constant, scaled_center_distance)
+        qc = self.integrals.get_s1_1d_kinetic_derivative(qubit_count, scaled_decay_constant, scaled_center_distance)
 
         stats = self._get_circuit_stats(qc)
         raw_results = self._run_all_methods(qc, qubit_count, shots)
@@ -184,10 +184,8 @@ class Experiment:
 
         used_center_distance = scaled_center_distance / scale
 
-        integrals = Integals(self.allow_measurement, self.optimize_t_gates)
-
         # Exact continuous result: T₁₂ = ½a²(1 - a|R|)e^(-a|R|)
-        exact_result = integrals.get_1s_1d_kinetic_exact_result(decay_constant, used_center_distance)
+        exact_result = self.integrals.get_1s_1d_kinetic_exact_result(decay_constant, used_center_distance)
 
         context = IntegralContext(
             used_center_distance=used_center_distance,
@@ -196,7 +194,7 @@ class Experiment:
         )
 
         
-        qc = integrals.get_s1_1d_overlap_circuit(qubit_count, scaled_decay_constant, scaled_center_distance)
+        qc = self.integrals.get_s1_1d_overlap_circuit(qubit_count, scaled_decay_constant, scaled_center_distance)
 
         stats = self._get_circuit_stats(qc)
         raw_results = self._run_all_methods(qc, qubit_count, shots)
@@ -239,10 +237,8 @@ class Experiment:
 
         used_center_distance = scaled_center_distance / scale
 
-        integrals = Integals(self.allow_measurement, self.optimize_t_gates)
-
         # Exact continuous result: T₁₂ = ½a²(1 - a|R|)e^(-a|R|)
-        exact_result = integrals.get_1s_1d_kinetic_exact_result(decay_constant, used_center_distance)
+        exact_result = self.integrals.get_1s_1d_kinetic_exact_result(decay_constant, used_center_distance)
 
         context = IntegralContext(
             used_center_distance=used_center_distance,
@@ -250,9 +246,9 @@ class Experiment:
             exact_result=exact_result,
         )
 
-        qc_0 = integrals.get_s1_1d_overlap_circuit(qubit_count, scaled_decay_constant, scaled_center_distance)
-        qc_1 = integrals.get_s1_1d_overlap_circuit(qubit_count, scaled_decay_constant, scaled_center_distance + 1)
-        qc_m1 = integrals.get_s1_1d_overlap_circuit(qubit_count, scaled_decay_constant, scaled_center_distance - 1)
+        qc_0 = self.integrals.get_s1_1d_overlap_circuit(qubit_count, scaled_decay_constant, scaled_center_distance)
+        qc_1 = self.integrals.get_s1_1d_overlap_circuit(qubit_count, scaled_decay_constant, scaled_center_distance + 1)
+        qc_m1 = self.integrals.get_s1_1d_overlap_circuit(qubit_count, scaled_decay_constant, scaled_center_distance - 1)
 
         stats = self._get_circuit_stats(qc_0)
         raw_results_0 = self._run_all_methods(qc_0, qubit_count, shots)
@@ -263,7 +259,7 @@ class Experiment:
         analitical_result = None
         scale_squared = scale ** 2
         for i in range(len(raw_results_0)):
-            result = (raw_results_0[i].run_result - 0.5 * raw_results_1[i].run_result - 0.5 * raw_results_m1[i].run_result)
+            result = (raw_results_0[i].run_result - 0.5 * raw_results_1[i].run_result - 0.5 * raw_results_m1[i].run_result) / scale_squared
 
             if i == 0:
                 analitical_result = result
@@ -287,41 +283,14 @@ class Experiment:
             decay_constant: float,
             max_range: int, # the size of the space that will be represented by 2^qubit_count values
             shots: int = 1024) -> Results:
-
-        scale = (2 ** qubit_count) / max_range
-        scaled_decay_constant = decay_constant / scale
         
-        integrals = Integals(self.allow_measurement, self.optimize_t_gates)
-
-        context = IntegralContext(
-            used_center_distance=None,
-            scaled_center_distance=None,
-            exact_result=0.0,
+        return self._run_orthogonal_overlap_integral(
+            build_qc_method=self.integrals.get_s1_s2_overlap_3d_circuit,
+            qubit_count=qubit_count,
+            decay_constant=decay_constant,
+            max_range=max_range,
+            shots=shots
         )
-
-        qc = integrals.get_s1_s2_overlap_3d_circuit(qubit_count, scaled_decay_constant)
-
-        stats = self._get_circuit_stats(qc)
-        raw_results = self._run_all_methods(qc, qc.num_qubits, shots)
-        
-        simulation_results = []
-        analitical_result = None
-        for run_result in raw_results:
-            if run_result.run_name == "Analytical (statevector)":
-                analitical_result = run_result.run_result
-
-            errors = self._get_errors(context.exact_result, run_result.run_result, analitical_result)
-            simulation_results.append(SimulationResults(
-                name=run_result.run_name,
-                result=run_result.run_result,
-                errors=errors
-            ))
-
-        return Results(
-            context=context,
-            stats=stats,
-            results=simulation_results
-        ) 
     
     def run_s2_s1_3d_overlap_integral(
             self,
@@ -329,40 +298,13 @@ class Experiment:
             decay_constant: float,
             max_range: int, # the size of the space that will be represented by 2^qubit_count values
             shots: int = 1024) -> Results:
-
-        scale = (2 ** qubit_count) / max_range
-        scaled_decay_constant = decay_constant / scale
         
-        integrals = Integals(self.allow_measurement, self.optimize_t_gates)
-
-        context = IntegralContext(
-            used_center_distance=None,
-            scaled_center_distance=None,
-            exact_result=0.0,
-        )
-
-        qc = integrals.get_s2_s1_overlap_3d_circuit(qubit_count, scaled_decay_constant)
-
-        stats = self._get_circuit_stats(qc)
-        raw_results = self._run_all_methods(qc, qc.num_qubits, shots)
-        
-        simulation_results = []
-        analitical_result = None
-        for run_result in raw_results:
-            if run_result.run_name == "Analytical (statevector)":
-                analitical_result = run_result.run_result
-
-            errors = self._get_errors(context.exact_result, run_result.run_result, analitical_result)
-            simulation_results.append(SimulationResults(
-                name=run_result.run_name,
-                result=run_result.run_result,
-                errors=errors
-            ))
-
-        return Results(
-            context=context,
-            stats=stats,
-            results=simulation_results
+        return self._run_orthogonal_overlap_integral(
+            build_qc_method=self.integrals.get_s2_s1_overlap_3d_circuit,
+            qubit_count=qubit_count,
+            decay_constant=decay_constant,
+            max_range=max_range,
+            shots=shots
         )
     
     def run_s1_s1_3d_overlap_integral(
@@ -371,40 +313,13 @@ class Experiment:
             decay_constant: float,
             max_range: int, # the size of the space that will be represented by 2^qubit_count values
             shots: int = 1024) -> Results:
-
-        scale = (2 ** qubit_count) / max_range
-        scaled_decay_constant = decay_constant / scale
         
-        integrals = Integals(self.allow_measurement, self.optimize_t_gates)
-
-        context = IntegralContext(
-            used_center_distance=None,
-            scaled_center_distance=None,
-            exact_result=1.0,
-        )
-
-        qc = integrals.get_s1_s1_overlap_3d_circuit(qubit_count, scaled_decay_constant)
-
-        stats = self._get_circuit_stats(qc)
-        raw_results = self._run_all_methods(qc, qc.num_qubits, shots)
-        
-        simulation_results = []
-        analitical_result = None
-        for run_result in raw_results:
-            if run_result.run_name == "Analytical (statevector)":
-                analitical_result = run_result.run_result
-
-            errors = self._get_errors(context.exact_result, run_result.run_result, analitical_result)
-            simulation_results.append(SimulationResults(
-                name=run_result.run_name,
-                result=run_result.run_result,
-                errors=errors
-            ))
-
-        return Results(
-            context=context,
-            stats=stats,
-            results=simulation_results
+        return self._run_orthogonal_overlap_integral(
+            build_qc_method=self.integrals.get_s1_s1_overlap_3d_circuit,
+            qubit_count=qubit_count,
+            decay_constant=decay_constant,
+            max_range=max_range,
+            shots=shots
         )
     
     def run_s2_s2_3d_overlap_integral(
@@ -413,19 +328,111 @@ class Experiment:
             decay_constant: float,
             max_range: int, # the size of the space that will be represented by 2^qubit_count values
             shots: int = 1024) -> Results:
+        
+        return self._run_orthogonal_overlap_integral(
+            build_qc_method=self.integrals.get_s2_s2_overlap_3d_circuit,
+            qubit_count=qubit_count,
+            decay_constant=decay_constant,
+            max_range=max_range,
+            shots=shots
+        )
+    
+    def run_s1_p2_3d_overlap_integral(
+            self,
+            qubit_count: int,
+            decay_constant: float,
+            max_range: int, # the size of the space that will be represented by 2^qubit_count values
+            shots: int = 1024) -> Results:
+
+        return self._run_orthogonal_overlap_integral(
+            build_qc_method=self.integrals.get_s1_p2_overlap_3d_circuit,
+            qubit_count=qubit_count,
+            decay_constant=decay_constant,
+            max_range=max_range,
+            shots=shots
+        )
+    
+    def run_s2_p2_3d_overlap_integral(
+            self,
+            qubit_count: int,
+            decay_constant: float,
+            max_range: int, # the size of the space that will be represented by 2^qubit_count values
+            shots: int = 1024) -> Results:
+
+        return self._run_orthogonal_overlap_integral(
+            build_qc_method=self.integrals.get_s2_p2_overlap_3d_circuit,
+            qubit_count=qubit_count,
+            decay_constant=decay_constant,
+            max_range=max_range,
+            shots=shots
+        )
+    
+    def run_p2_p2_3d_overlap_integral(
+            self,
+            qubit_count: int,
+            decay_constant: float,
+            max_range: int, # the size of the space that will be represented by 2^qubit_count values
+            shots: int = 1024) -> Results:
+
+        return self._run_orthogonal_overlap_integral(
+            build_qc_method=self.integrals.get_p2_p2_overlap_3d_circuit,
+            qubit_count=qubit_count,
+            decay_constant=decay_constant,
+            max_range=max_range,
+            shots=shots
+        )
+    
+    def run_p2_s1_3d_overlap_integral(
+            self,
+            qubit_count: int,
+            decay_constant: float,
+            max_range: int, # the size of the space that will be represented by 2^qubit_count values
+            shots: int = 1024) -> Results:
+
+        return self._run_orthogonal_overlap_integral(
+            build_qc_method=self.integrals.get_p2_s1_overlap_3d_circuit,
+            qubit_count=qubit_count,
+            decay_constant=decay_constant,
+            max_range=max_range,
+            shots=shots
+        )
+    
+    def run_p2_s2_3d_overlap_integral(
+            self,
+            qubit_count: int,
+            decay_constant: float,
+            max_range: int, # the size of the space that will be represented by 2^qubit_count values
+            shots: int = 1024) -> Results:
+
+        return self._run_orthogonal_overlap_integral(
+            build_qc_method=self.integrals.get_p2_s2_overlap_3d_circuit,
+            qubit_count=qubit_count,
+            decay_constant=decay_constant,
+            max_range=max_range,
+            shots=shots
+        )
+
+
+
+    
+    def _run_orthogonal_overlap_integral(
+            self,
+            build_qc_method: callable,
+            qubit_count: int,
+            decay_constant: float,
+            max_range: int, # the size of the space that will be represented by 2^qubit_count values
+            shots: int = 1024) -> Results:
 
         scale = (2 ** qubit_count) / max_range
         scaled_decay_constant = decay_constant / scale
-        
-        integrals = Integals(self.allow_measurement, self.optimize_t_gates)
 
         context = IntegralContext(
             used_center_distance=None,
             scaled_center_distance=None,
-            exact_result=1.0,
+            exact_result=0.0,
         )
 
-        qc = integrals.get_s2_s2_overlap_3d_circuit(qubit_count, scaled_decay_constant)
+        qc = build_qc_method(qubit_count, scaled_decay_constant)
 
         stats = self._get_circuit_stats(qc)
         raw_results = self._run_all_methods(qc, qc.num_qubits, shots)
