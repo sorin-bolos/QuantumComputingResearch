@@ -62,26 +62,27 @@ class LogicalOperator:
 
     @staticmethod
     def _temporary_and_dagger() -> QuantumCircuit:
-        qc = QuantumCircuit(3)
-        operand1 = 0
-        operand2 = 1
-        target = 2
+        return LogicalOperator._temporary_and().inverse()
+        # qc = QuantumCircuit(3)
+        # operand1 = 0
+        # operand2 = 1
+        # target = 2
 
-        qc.sdg(target)
-        qc.h(target)
-        qc.cx(target, operand1)
-        qc.cx(target, operand2)
-        qc.t(operand1) 
-        qc.t(operand2)
-        qc.tdg(target)
-        qc.cx(target, operand1)
-        qc.cx(target, operand2) 
-        qc.cx(operand2, target)
-        qc.cx(operand1, target)
-        qc.tdg(target)
-        qc.h(target)
+        # qc.sdg(target)
+        # qc.h(target)
+        # qc.cx(target, operand2)
+        # qc.cx(target, operand1)
+        # qc.tdg(target)
+        # qc.t(operand2) 
+        # qc.t(operand1)
+        # qc.cx(target, operand2)
+        # qc.cx(target, operand1) 
+        # qc.cx(operand2, target)
+        # qc.cx(operand1, target)
+        # qc.tdg(target)
+        # qc.h(target)
         
-        return qc
+        # return qc
     
     @staticmethod
     def _temporary_and_uncompute_with_measurement():

@@ -139,7 +139,7 @@ class ArithmeticOperator:
         qc.cx(0,1)
         qc.x(0)
         a1a2 = constant_bits[1] ^ constant_bits[2]
-        self._classic_cx(qc, 1, a1a2)
+        self._classic_cx(qc, 2, a1a2)
 
         return qc
 
@@ -223,7 +223,7 @@ class ArithmeticOperator:
 
         self._classic_cx(qc, anc[0], constant_bits[2])
         qc.cx(anc[0], data[2])
-        self._classic_cx(qc, anc[0], data[1])
+        self._classic_cx(qc, anc[0], constant_bits[1])
         logical_op.uncompute_temporary_and(data[0], data[1], anc[0])
 
         self._classic_cx(qc, data[0], constant_bits[1])
