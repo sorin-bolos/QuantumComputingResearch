@@ -442,7 +442,7 @@ Center distance (discretized) : 1.40625
   Noise           : 0.442940  (75.11 %)
 
 
-##################### 1s overlap 1.40625 9 qubits ################
+##################### 1s overlap 1.40625 10 qubits ################
 Center distance (discretized) : 1.40625
   Scaled distance (in grid) : 90
   Exact result             : 0.589677

@@ -1,0 +1,480 @@
+############################ Kinetic #############################
+##################################################################
+
+##################### 1s overlap 1 4 qubits ################
+Center distance (discretized) : 1.0
+  Scaled distance (in grid) : 1
+  Exact result             : 0.000000
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 223
+  Single-qubit gates   : 316  (rz + sx + x)
+  Two-qubit gates (ecr): 62
+  T gates (logical)    : 8
+  All gate counts      : {'rz': 189, 'sx': 111, 'ecr': 62, 'x': 16}
+
+
+  Analytical (statevector) result : -0.032227
+  Error vs continuous  : 0.032227  (0.00 %)
+  Discretisation error : 0.032227  (0.00 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.033127
+  Error vs continuous  : 0.033127  (0.00 %)
+  Discretisation error : 0.032227  (0.00 %)
+  Noise           : 0.000900  (-2.79 %)
+
+  Noisy (simulation) result : -0.091269
+  Error vs continuous  : 0.091269  (0.00 %)
+  Discretisation error : 0.032227  (0.00 %)
+  Noise           : 0.059042  (-183.21 %)
+
+  Noisy (estimation) result : -0.101490
+  Error vs continuous  : 0.101490  (0.00 %)
+  Discretisation error : 0.032227  (0.00 %)
+  Noise           : 0.069263  (-214.93 %)
+
+Center distance (discretized) : 1.0
+  Scaled distance (in grid) : 1
+  Exact result             : 0.000000
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 228
+  Single-qubit gates   : 295  (rz + sx + x)
+  Two-qubit gates (ecr): 58
+  T gates (logical)    : 8
+  All gate counts      : {'rz': 178, 'sx': 106, 'ecr': 58, 'x': 11}
+
+
+  Analytical (statevector) result : -0.032227
+  Error vs continuous  : 0.032227  (0.00 %)
+  Discretisation error : 0.032227  (0.00 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.029545
+  Error vs continuous  : 0.029545  (0.00 %)
+  Discretisation error : 0.032227  (0.00 %)
+  Noise           : 0.002682  (-8.32 %)
+
+  Noisy (simulation) result : -0.089892
+  Error vs continuous  : 0.089892  (0.00 %)
+  Discretisation error : 0.032227  (0.00 %)
+  Noise           : 0.057665  (-178.94 %)
+
+  Noisy (estimation) result : -0.085775
+  Error vs continuous  : 0.085775  (0.00 %)
+  Discretisation error : 0.032227  (0.00 %)
+  Noise           : 0.053548  (-166.16 %)
+
+
+##################### 1s overlap 1.5 5 qubits ################
+Center distance (discretized) : 1.5
+  Scaled distance (in grid) : 3
+  Exact result             : -0.055783
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 370
+  Single-qubit gates   : 529  (rz + sx + x)
+  Two-qubit gates (ecr): 110
+  T gates (logical)    : 16
+  All gate counts      : {'rz': 317, 'sx': 186, 'ecr': 110, 'x': 26}
+
+
+  Analytical (statevector) result : -0.062844
+  Error vs continuous  : 0.007061  (-12.66 %)
+  Discretisation error : 0.007061  (-12.66 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.063170
+  Error vs continuous  : 0.007387  (-13.24 %)
+  Discretisation error : 0.007061  (-12.66 %)
+  Noise           : 0.000326  (-0.52 %)
+
+  Noisy (simulation) result : -0.081743
+  Error vs continuous  : 0.025961  (-46.54 %)
+  Discretisation error : 0.007061  (-12.66 %)
+  Noise           : 0.018900  (-30.07 %)
+
+  Noisy (estimation) result : -0.079591
+  Error vs continuous  : 0.023809  (-42.68 %)
+  Discretisation error : 0.007061  (-12.66 %)
+  Noise           : 0.016748  (-26.65 %)
+
+Center distance (discretized) : 1.5
+  Scaled distance (in grid) : 3
+  Exact result             : -0.055783
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 372
+  Single-qubit gates   : 531  (rz + sx + x)
+  Two-qubit gates (ecr): 110
+  T gates (logical)    : 16
+  All gate counts      : {'rz': 318, 'sx': 188, 'ecr': 110, 'x': 25}
+
+
+  Analytical (statevector) result : -0.062844
+  Error vs continuous  : 0.007061  (-12.66 %)
+  Discretisation error : 0.007061  (-12.66 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.063367
+  Error vs continuous  : 0.007584  (-13.60 %)
+  Discretisation error : 0.007061  (-12.66 %)
+  Noise           : 0.000523  (-0.83 %)
+
+  Noisy (simulation) result : -0.083096
+  Error vs continuous  : 0.027314  (-48.96 %)
+  Discretisation error : 0.007061  (-12.66 %)
+  Noise           : 0.020252  (-32.23 %)
+
+  Noisy (estimation) result : -0.078328
+  Error vs continuous  : 0.022545  (-40.42 %)
+  Discretisation error : 0.007061  (-12.66 %)
+  Noise           : 0.015484  (-24.64 %)
+
+
+##################### 1s overlap 1.5 6 qubits ################
+Center distance (discretized) : 1.5
+  Scaled distance (in grid) : 6
+  Exact result             : -0.055783
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 414
+  Single-qubit gates   : 669  (rz + sx + x)
+  Two-qubit gates (ecr): 132
+  T gates (logical)    : 16
+  All gate counts      : {'rz': 405, 'sx': 243, 'ecr': 132, 'x': 21}
+
+
+  Analytical (statevector) result : -0.057532
+  Error vs continuous  : 0.001749  (-3.14 %)
+  Discretisation error : 0.001749  (-3.14 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.059720
+  Error vs continuous  : 0.003937  (-7.06 %)
+  Discretisation error : 0.001749  (-3.14 %)
+  Noise           : 0.002188  (-3.80 %)
+
+  Noisy (simulation) result : -0.077489
+  Error vs continuous  : 0.021707  (-38.91 %)
+  Discretisation error : 0.001749  (-3.14 %)
+  Noise           : 0.019957  (-34.69 %)
+
+  Noisy (estimation) result : -0.069916
+  Error vs continuous  : 0.014134  (-25.34 %)
+  Discretisation error : 0.001749  (-3.14 %)
+  Noise           : 0.012384  (-21.53 %)
+
+
+Center distance (discretized) : 1.5
+  Scaled distance (in grid) : 6
+  Exact result             : -0.055783
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 381
+  Single-qubit gates   : 659  (rz + sx + x)
+  Two-qubit gates (ecr): 134
+  T gates (logical)    : 16
+  All gate counts      : {'rz': 398, 'sx': 224, 'ecr': 134, 'x': 37}
+
+
+  Analytical (statevector) result : -0.057532
+  Error vs continuous  : 0.001749  (-3.14 %)
+  Discretisation error : 0.001749  (-3.14 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.057594
+  Error vs continuous  : 0.001811  (-3.25 %)
+  Discretisation error : 0.001749  (-3.14 %)
+  Noise           : 0.000062  (-0.11 %)
+
+  Noisy (simulation) result : -0.085024
+  Error vs continuous  : 0.029241  (-52.42 %)
+  Discretisation error : 0.001749  (-3.14 %)
+  Noise           : 0.027492  (-47.79 %)
+
+  Noisy (estimation) result : -0.076882
+  Error vs continuous  : 0.021099  (-37.82 %)
+  Discretisation error : 0.001749  (-3.14 %)
+  Noise           : 0.019350  (-33.63 %)
+
+
+##################### 1s overlap 1.375 7 qubits ################
+Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 11
+  Exact result             : -0.047407
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 656
+  Single-qubit gates   : 1022  (rz + sx + x)
+  Two-qubit gates (ecr): 211
+  T gates (logical)    : 32
+  All gate counts      : {'rz': 623, 'sx': 369, 'ecr': 211, 'x': 30}
+
+
+  Analytical (statevector) result : -0.047861
+  Error vs continuous  : 0.000454  (-0.96 %)
+  Discretisation error : 0.000454  (-0.96 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.046581
+  Error vs continuous  : 0.000826  (-1.74 %)
+  Discretisation error : 0.000454  (-0.96 %)
+  Noise           : 0.001280  (-2.67 %)
+
+  Noisy (simulation) result : -0.049364
+  Error vs continuous  : 0.001957  (-4.13 %)
+  Discretisation error : 0.000454  (-0.96 %)
+  Noise           : 0.001503  (-3.14 %)
+
+  Noisy (estimation) result : -0.050684
+  Error vs continuous  : 0.003276  (-6.91 %)
+  Discretisation error : 0.000454  (-0.96 %)
+  Noise           : 0.002823  (-5.90 %)
+
+
+Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 11
+  Exact result             : -0.047407
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 669
+  Single-qubit gates   : 1027  (rz + sx + x)
+  Two-qubit gates (ecr): 213
+  T gates (logical)    : 32
+  All gate counts      : {'rz': 623, 'sx': 357, 'ecr': 213, 'x': 47}
+
+
+  Analytical (statevector) result : -0.047861
+  Error vs continuous  : 0.000454  (-0.96 %)
+  Discretisation error : 0.000454  (-0.96 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.047901
+  Error vs continuous  : 0.000493  (-1.04 %)
+  Discretisation error : 0.000454  (-0.96 %)
+  Noise           : 0.000040  (-0.08 %)
+
+  Noisy (simulation) result : -0.048754
+  Error vs continuous  : 0.001346  (-2.84 %)
+  Discretisation error : 0.000454  (-0.96 %)
+  Noise           : 0.000893  (-1.87 %)
+
+  Noisy (estimation) result : -0.052852
+  Error vs continuous  : 0.005444  (-11.48 %)
+  Discretisation error : 0.000454  (-0.96 %)
+  Noise           : 0.004991  (-10.43 %)
+
+
+
+##################### 1s overlap 1.40625 8 qubits ################
+Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : -0.047407
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 693
+  Single-qubit gates   : 1159  (rz + sx + x)
+  Two-qubit gates (ecr): 238
+  T gates (logical)    : 32
+  All gate counts      : {'rz': 705, 'sx': 405, 'ecr': 238, 'x': 49}
+
+
+  Analytical (statevector) result : -0.047521
+  Error vs continuous  : 0.000114  (-0.24 %)
+  Discretisation error : 0.000114  (-0.24 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.044946
+  Error vs continuous  : 0.002461  (-5.19 %)
+  Discretisation error : 0.000114  (-0.24 %)
+  Noise           : 0.002575  (-5.42 %)
+
+  Noisy (simulation) result : -0.056474
+  Error vs continuous  : 0.009066  (-19.12 %)
+  Discretisation error : 0.000114  (-0.24 %)
+  Noise           : 0.008953  (-18.84 %)
+
+  Noisy (estimation) result : -0.040878
+  Error vs continuous  : 0.006530  (-13.77 %)
+  Discretisation error : 0.000114  (-0.24 %)
+  Noise           : 0.006643  (-13.98 %)
+
+
+Center distance (discretized) : 1.375
+  Scaled distance (in grid) : 22
+  Exact result             : -0.047407
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 760
+  Single-qubit gates   : 1251  (rz + sx + x)
+  Two-qubit gates (ecr): 260
+  T gates (logical)    : 32
+  All gate counts      : {'rz': 766, 'sx': 426, 'ecr': 260, 'x': 59}
+
+
+  Analytical (statevector) result : -0.047521
+  Error vs continuous  : 0.000114  (-0.24 %)
+  Discretisation error : 0.000114  (-0.24 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.043822
+  Error vs continuous  : 0.003585  (-7.56 %)
+  Discretisation error : 0.000114  (-0.24 %)
+  Noise           : 0.003699  (-7.78 %)
+
+  Noisy (simulation) result : -0.058049
+  Error vs continuous  : 0.010641  (-22.45 %)
+  Discretisation error : 0.000114  (-0.24 %)
+  Noise           : 0.010528  (-22.15 %)
+
+  Noisy (estimation) result : -0.053787
+  Error vs continuous  : 0.006380  (-13.46 %)
+  Discretisation error : 0.000114  (-0.24 %)
+  Noise           : 0.006266  (-13.19 %)
+
+  
+##################### 1s overlap 1.40625 9 qubits ################
+Center distance (discretized) : 1.40625
+  Scaled distance (in grid) : 45
+  Exact result             : -0.049778
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 991
+  Single-qubit gates   : 1604  (rz + sx + x)
+  Two-qubit gates (ecr): 333
+  T gates (logical)    : 48
+  All gate counts      : {'rz': 978, 'sx': 567, 'ecr': 333, 'x': 59}
+
+
+  Analytical (statevector) result : -0.049807
+  Error vs continuous  : 0.000029  (-0.06 %)
+  Discretisation error : 0.000029  (-0.06 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.056337
+  Error vs continuous  : 0.006559  (-13.18 %)
+  Discretisation error : 0.000029  (-0.06 %)
+  Noise           : 0.006530  (-13.11 %)
+
+  Noisy (simulation) result : -0.062107
+  Error vs continuous  : 0.012329  (-24.77 %)
+  Discretisation error : 0.000029  (-0.06 %)
+  Noise           : 0.012300  (-24.70 %)
+
+  Noisy (estimation) result : -0.058463
+  Error vs continuous  : 0.008685  (-17.45 %)
+  Discretisation error : 0.000029  (-0.06 %)
+  Noise           : 0.008657  (-17.38 %)
+
+Center distance (discretized) : 1.40625
+  Scaled distance (in grid) : 45
+  Exact result             : -0.049778
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 942
+  Single-qubit gates   : 1579  (rz + sx + x)
+  Two-qubit gates (ecr): 332
+  T gates (logical)    : 48
+  All gate counts      : {'rz': 967, 'sx': 552, 'ecr': 332, 'x': 60}
+
+
+  Analytical (statevector) result : -0.049807
+  Error vs continuous  : 0.000029  (-0.06 %)
+  Discretisation error : 0.000029  (-0.06 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.064424
+  Error vs continuous  : 0.014646  (-29.42 %)
+  Discretisation error : 0.000029  (-0.06 %)
+  Noise           : 0.014617  (-29.35 %)
+
+  Noisy (simulation) result : -0.058040
+  Error vs continuous  : 0.008262  (-16.60 %)
+  Discretisation error : 0.000029  (-0.06 %)
+  Noise           : 0.008233  (-16.53 %)
+
+  Noisy (estimation) result : -0.041340
+  Error vs continuous  : 0.008438  (-16.95 %)
+  Discretisation error : 0.000029  (-0.06 %)
+  Noise           : 0.008467  (-17.00 %)
+
+##################### 1s overlap 1.40625 10 qubits ################
+
+  Scaled distance (in grid) : 90
+  Exact result             : 0.589677
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 1107
+  Single-qubit gates   : 1810  (rz + sx + x)
+  Two-qubit gates (ecr): 384
+  T gates (logical)    : 48
+  All gate counts      : {'rz': 1104, 'sx': 635, 'ecr': 384, 'x': 71}
+
+
+  Analytical (statevector) result : 0.589691
+  Error vs continuous  : 0.000014  (0.00 %)
+  Discretisation error : 0.000014  (0.00 %)
+  Noise           : 0.000000  (0.00 %)
+
+  Sampled (counts) result : 0.582961
+  Error vs continuous  : 0.006716  (1.14 %)
+  Discretisation error : 0.000014  (0.00 %)
+  Noise           : 0.006730  (1.14 %)
+
+  Noisy (simulation) result : 0.148784
+  Error vs continuous  : 0.440893  (74.77 %)
+  Discretisation error : 0.000014  (0.00 %)
+  Noise           : 0.440907  (74.77 %)
+
+  Noisy (estimation) result : 0.093750
+  Error vs continuous  : 0.495927  (84.10 %)
+  Discretisation error : 0.000014  (0.00 %)
+  Noise           : 0.495941  (84.10 %)
+
+Center distance (discretized) : 1.40625
+  Scaled distance (in grid) : 90
+  Exact result             : -0.049778
+
+  Backend name         : fake_sherbrooke
+  Qubits (transpiled)  : 127
+  Depth                : 1083
+  Single-qubit gates   : 1807  (rz + sx + x)
+  Two-qubit gates (ecr): 368
+  T gates (logical)    : 48
+  All gate counts      : {'rz': 1111, 'sx': 634, 'ecr': 368, 'x': 62}
+
+
+  Analytical (statevector) result : -0.049785
+  Error vs continuous  : 0.000008  (-0.02 %)
+  Discretisation error : 0.000008  (-0.02 %)
+  Noise           : 0.000000  (-0.00 %)
+
+  Sampled (counts) result : -0.046875
+  Error vs continuous  : 0.002903  (-5.83 %)
+  Discretisation error : 0.000008  (-0.02 %)
+  Noise           : 0.002910  (-5.85 %)
+
+  Noisy (simulation) result : -0.021979
+  Error vs continuous  : 0.027799  (-55.85 %)
+  Discretisation error : 0.000008  (-0.02 %)
+  Noise           : 0.027806  (-55.85 %)
+
+  Noisy (estimation) result : -0.034939
+  Error vs continuous  : 0.014839  (-29.81 %)
+  Discretisation error : 0.000008  (-0.02 %)
+  Noise           : 0.014847  (-29.82 %)
