@@ -16,33 +16,13 @@ class Sto2S3D:
     def sto_2s_3d_cartesian_bounded(self, qubits_per_coord, decay_constant, max_range):
         return self._sto_2s_3d_cartesian_bounded(qubits_per_coord, decay_constant, max_range)
 
-    def split_run_results_by_coordinate(self, qubits_per_coord, data_amplitudes):
-        """Extract per-coordinate marginal distributions from a 3D amplitude-encoded statevector.
+    def get_max_bond_dimension(self, qubits_per_coord, decay_constant, max_range):
+        n_total = 3 * qubits_per_coord
 
-        The statevector encodes psi = sum_{x,y,z} f(x,y,z)|x>|y>|z> with index ordering
-        idx = jx * N^2 + jy * N + jz (matching _build_cartesian_state).
+        psi = self._build_cartesian_state_bounded(qubits_per_coord, decay_constant, max_range)
 
-        Parameters
-        ----------
-        data_amplitudes : array-like
-            Statevector of length 2^(3*qubits_per_coord).
-        qubits_per_coord : int
-            Number of qubits per spatial coordinate.
-
-        Returns
-        -------
-        x_marginal, y_marginal, z_marginal : ndarray of length N = 2^qubits_per_coord
-            Marginal probability distributions for each coordinate,
-            computed as sum of |psi|^2 over the other two coordinates.
-            Suitable for plotting as bar graphs.
-        """
-        N = 2 ** qubits_per_coord
-        psi = np.array(data_amplitudes).reshape((N, N, N))
-        probs = np.abs(psi) ** 2
-        x_marginal = probs.sum(axis=(1, 2))
-        y_marginal = probs.sum(axis=(0, 2))
-        z_marginal = probs.sum(axis=(0, 1))
-        return x_marginal, y_marginal, z_marginal
+        max_bond = self.mps.compute_max_bond_dimension_from_amplitudes(psi, n_total)
+        return max_bond
 
     def _sto_2s_3d_cartesian(self, qubits_per_coord, decay_constant):
         n_total = 3 * qubits_per_coord

@@ -16,6 +16,14 @@ class Sto1S3D:
     def sto_1s_3d_cartesian_bounded(self, qubits_per_coord, decay_constant, max_range):
         return self._sto_1s_3d_cartesian_bounded(qubits_per_coord, decay_constant, max_range)
 
+    def get_max_bond_dimension(self, qubits_per_coord, decay_constant, max_range):
+        n_total = 3 * qubits_per_coord
+
+        psi = self._build_cartesian_state_bounded(qubits_per_coord, decay_constant, max_range)
+
+        max_bond = self.mps.compute_max_bond_dimension_from_amplitudes(psi, n_total)
+        return max_bond
+
     def _sto_1s_3d_cartesian(self, qubits_per_coord, decay_constant):
         n_total = 3 * qubits_per_coord
 
