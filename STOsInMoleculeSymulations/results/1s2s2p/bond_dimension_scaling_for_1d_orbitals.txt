@@ -1,0 +1,87 @@
+
+############# 1s 1D Orbital #############
+n=2 qubits: max bond dimension = 1
+n=3 qubits: max bond dimension = 1
+n=4 qubits: max bond dimension = 1
+n=5 qubits: max bond dimension = 1
+n=6 qubits: max bond dimension = 1
+n=7 qubits: max bond dimension = 1
+n=8 qubits: max bond dimension = 1
+n=9 qubits: max bond dimension = 1
+n=10 qubits: max bond dimension = 1
+n=11 qubits: max bond dimension = 1
+n=12 qubits: max bond dimension = 1
+n=13 qubits: max bond dimension = 1
+n=14 qubits: max bond dimension = 1
+n=15 qubits: max bond dimension = 1
+n=16 qubits: max bond dimension = 1
+n=17 qubits: max bond dimension = 1
+n=18 qubits: max bond dimension = 1
+n=19 qubits: max bond dimension = 1
+n=20 qubits: max bond dimension = 1
+
+
+############# 2s 1D STO #############
+n=2 qubits: max bond dimension = 1
+n=3 qubits: max bond dimension = 2
+n=4 qubits: max bond dimension = 2
+n=5 qubits: max bond dimension = 2
+n=6 qubits: max bond dimension = 2
+n=7 qubits: max bond dimension = 2
+n=8 qubits: max bond dimension = 2
+n=9 qubits: max bond dimension = 2
+n=10 qubits: max bond dimension = 2
+n=11 qubits: max bond dimension = 2
+n=12 qubits: max bond dimension = 2
+n=13 qubits: max bond dimension = 2
+n=14 qubits: max bond dimension = 2
+n=15 qubits: max bond dimension = 2
+n=16 qubits: max bond dimension = 2
+n=17 qubits: max bond dimension = 2
+n=18 qubits: max bond dimension = 2
+n=19 qubits: max bond dimension = 2
+n=20 qubits: max bond dimension = 2
+
+
+############# 2s 1D H2 #############
+n=2 qubits: max bond dimension = 2
+n=3 qubits: max bond dimension = 2
+n=4 qubits: max bond dimension = 2
+n=5 qubits: max bond dimension = 2
+n=6 qubits: max bond dimension = 2
+n=7 qubits: max bond dimension = 2
+n=8 qubits: max bond dimension = 2
+n=9 qubits: max bond dimension = 2
+n=10 qubits: max bond dimension = 2
+n=11 qubits: max bond dimension = 2
+n=12 qubits: max bond dimension = 2
+n=13 qubits: max bond dimension = 2
+n=14 qubits: max bond dimension = 2
+n=15 qubits: max bond dimension = 2
+n=16 qubits: max bond dimension = 2
+n=17 qubits: max bond dimension = 2
+n=18 qubits: max bond dimension = 2
+n=19 qubits: max bond dimension = 2
+n=20 qubits: max bond dimension = 2
+
+
+############# 2s 1D H2 with Jacobian #############
+n=2 qubits: max bond dimension = 2
+n=3 qubits: max bond dimension = 2
+n=4 qubits: max bond dimension = 3
+n=5 qubits: max bond dimension = 3
+n=6 qubits: max bond dimension = 3
+n=7 qubits: max bond dimension = 3
+n=8 qubits: max bond dimension = 3
+n=9 qubits: max bond dimension = 3
+n=10 qubits: max bond dimension = 3
+n=11 qubits: max bond dimension = 3
+n=12 qubits: max bond dimension = 3
+n=13 qubits: max bond dimension = 3
+n=14 qubits: max bond dimension = 3
+n=15 qubits: max bond dimension = 3
+n=16 qubits: max bond dimension = 3
+n=17 qubits: max bond dimension = 2
+n=18 qubits: max bond dimension = 2
+n=19 qubits: max bond dimension = 2
+n=20 qubits: max bond dimension = 2

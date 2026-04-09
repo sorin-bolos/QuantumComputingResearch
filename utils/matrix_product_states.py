@@ -18,7 +18,12 @@ class Mps:
         number of singular values above threshold.
         """
         psi = self._get_normalized_amplitudes(function_1d, n_qubits, max_range)
+
+        max_chi = self.compute_max_bond_dimension_from_amplitudes(psi, n_qubits, threshold)
         
+        return max_chi
+
+    def compute_max_bond_dimension_from_amplitudes(self, psi, n_qubits, threshold=1e-12):        
         max_chi = 1
         for cut in range(1, n_qubits):
             left_dim = 2**cut
@@ -51,6 +56,11 @@ class Mps:
     def generate_mps_circuit_from_function(self, function_1d, n_qubits, max_range, label='mps'):
         normalized_f = self._get_normalized_amplitudes(function_1d, n_qubits, max_range)
         tensors = self._decompose_to_mps_right_canonical(n_qubits, normalized_f)
+        qc = self._build_mps_circuit(tensors, n_qubits, label)
+        return qc
+    
+    def generate_mps_circuit_from_amplitudes(self, psi, n_qubits, label='mps'):
+        tensors = self._decompose_to_mps_right_canonical(n_qubits, psi)
         qc = self._build_mps_circuit(tensors, n_qubits, label)
         return qc
     
@@ -284,22 +294,3 @@ class Mps:
 
         return rc
     
-    # def _mps_circuit_from_right_canonical_tensors(self, tensors, n_qubits):
-    #     """Build a quantum circuit from right-canonical MPS tensors.
-
-    #     Layout:  data qubits 0..n-1  |  bond qubits n..n+n_bond-1
-    #     """
-    #     max_chi = max(max(t.shape[0], t.shape[2]) for t in tensors)
-    #     n_bond  = int(np.ceil(np.log2(max(max_chi, 2))))
-    #     dim_bond = 2 ** n_bond
-
-    #     qc = QuantumCircuit(n_qubits + n_bond)
-    #     bond_qubits = list(range(n_qubits, n_qubits + n_bond))
-
-    #     for k, A in enumerate(tensors):
-    #         U = self._mps_tensor_to_unitary(A, dim_bond)
-    #         phys_qubit = n_qubits - 1 - k
-    #         gate = UnitaryGate(U, label=f'MPS[{k}]')
-    #         qc.append(gate, bond_qubits + [phys_qubit])
-
-    #     return qc

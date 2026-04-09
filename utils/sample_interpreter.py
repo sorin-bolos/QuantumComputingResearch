@@ -131,3 +131,30 @@ class SampleInterpreter:
         if statevector_result:
             print(f"Discretisation error: {abs(statevector_result  - theoretical):.4f}  ({abs(statevector_result  - theoretical)/theoretical*100:.2f} %)")
             print(f"Shot noise:           {abs(sampled - statevector_result):.4f}  ({abs(sampled - statevector_result)/statevector_result*100:.2f} %)")
+
+    def split_run_results_by_coordinate(self, qubits_per_coord, data_amplitudes):
+        """Extract per-coordinate marginal distributions from a 3D amplitude-encoded statevector.
+
+        The statevector encodes psi = sum_{x,y,z} f(x,y,z)|x>|y>|z> with index ordering
+        idx = jx * N^2 + jy * N + jz (matching _build_cartesian_state).
+
+        Parameters
+        ----------
+        data_amplitudes : array-like
+            Statevector of length 2^(3*qubits_per_coord).
+        qubits_per_coord : int
+            Number of qubits per spatial coordinate.
+
+        Returns
+        -------
+        x_marginal, y_marginal, z_marginal : ndarray of length N = 2^qubits_per_coord
+            Marginal probability distributions for each coordinate,
+            computed as sum of |psi|^2 over the other two coordinates.
+            Suitable for plotting as bar graphs.
+        """
+        N = 2 ** qubits_per_coord
+        psi = np.array(data_amplitudes).reshape((N, N, N))
+        x_marginal = psi.sum(axis=(1, 2))
+        y_marginal = psi.sum(axis=(0, 2))
+        z_marginal = psi.sum(axis=(0, 1))
+        return x_marginal, y_marginal, z_marginal
