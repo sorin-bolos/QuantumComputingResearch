@@ -120,3 +120,53 @@ Scaling of bond dimensions with grid resolution
       2S     9    27     116   1157.24s    0.03
       1S    10    30     124  13311.63s    0.02
       2S    10    30     122  13384.55s    0.02
+
+
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+Scaling of bond dimensions with grid resolution
+
+   Orbital    Space range [a.u.]      qubits per coordonate        alpha     max χ      time
+────────────────────────────────────────────────────────────────────────────────────────────────────
+        1S               32.0                     4                 1.00        29     0.01s
+        1S               32.0                     5                 1.00        44     0.16s
+        1S               32.0                     6                 1.00        67     0.87s
+        1S               32.0                     7                 1.00        87     6.90s
+        1S               32.0                     8                 1.00       104   111.30s
+        1S               32.0                     9                 1.00       115  1082.94s
+        1S               32.0                    10                 1.00       123  12767.89s
+
+Scaling of bond dimensions with grid resolution
+
+   Orbital    Space range [a.u.]      qubits per coordonate        alpha     max χ      time
+────────────────────────────────────────────────────────────────────────────────────────────────────
+        1S               64.0                     4                 1.00        17     0.01s
+        1S               64.0                     5                 1.00        30     0.12s
+        1S               64.0                     6                 1.00        45     0.77s
+        1S               64.0                     7                 1.00        68     6.52s
+        1S               64.0                     8                 1.00        88   106.45s
+        1S               64.0                     9                 1.00       104  1003.48s
+        1S               64.0                    10                 1.00       115  12543.28s
+
+Scaling of bond dimensions with grid resolution
+
+   Orbital    Space range [a.u.]      qubits per coordonate        alpha     max χ      time
+────────────────────────────────────────────────────────────────────────────────────────────────────
+        2S               32.0                     4                 1.00        34     0.01s
+        2S               32.0                     5                 1.00        51     0.14s
+        2S               32.0                     6                 1.00        79     0.87s
+        2S               32.0                     7                 1.00        98     7.15s
+        2S               32.0                     8                 1.00       110   110.63s
+        2S               32.0                     9                 1.00       121  1048.09s
+        2S               32.0                    10                 1.00       128  13044.27s
+
+Scaling of bond dimensions with grid resolution
+
+   Orbital    Space range [a.u.]      qubits per coordonate        alpha     max χ      time
+────────────────────────────────────────────────────────────────────────────────────────────────────
+        2S               64.0                     4                 1.00        31     0.04s
+        2S               64.0                     5                 1.00        46     0.43s
+        2S               64.0                     6                 1.00        71     2.85s
+        2S               64.0                     7                 1.00        93    28.80s
+        2S               64.0                     8                 1.00       109   178.48s
+        2S               64.0                     9                 1.00       119  2697.05s
