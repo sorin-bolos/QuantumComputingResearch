@@ -8,33 +8,49 @@ class StatePreparationAnalysis:
     def __init__(self):
         self.mps = Mps()
 
-    def analyze(self, decay_constant, max_qubit_count, max_range):
-        func_1s_1d = lambda x, a: np.exp(-a*x)  # 1s orbital shape (unnormalized)
-        self.chi_analysis("1s 1D Orbital", func_1s_1d, decay_constant, max_qubit_count, max_range)
+    def analyze_1d(self, max_qubit_count, max_range):
+        decay_constant = 1.0
+        center_offset = max_range / 2
 
-        func_2s_1d_sto = lambda x, a: x*np.exp(-a*x)  # 2s orbital shape (unnormalized)
-        self.chi_analysis("2s 1D STO", func_2s_1d_sto, decay_constant, max_qubit_count, max_range)
+        func_1s_1d_uncentered = lambda x: np.exp(-decay_constant*np.abs(x))  # 1s orbital shape (unnormalized)
+        self._chi_analysis_1d("1s 1D Orbital Uncentered", func_1s_1d_uncentered, max_qubit_count, max_range)
 
-        func_2s_1d_h2 = lambda x, a: (2 - a*x)*np.exp(-a*x/2)  # 2s orbital shape (unnormalized)
-        self.chi_analysis("2s 1D H2", func_2s_1d_h2, decay_constant, max_qubit_count, max_range)
+        func_2s_1d_sto_uncentered = lambda x: np.abs(x)*np.exp(-decay_constant*np.abs(x))  # 2s orbital shape (unnormalized)
+        self._chi_analysis_1d("2s 1D STO Uncentered", func_2s_1d_sto_uncentered, max_qubit_count, max_range)
 
-        func_2s_1d_h2_jacobian = lambda x, a: x*(2 - a*x)*np.exp(-a*x/2)  # 2s orbital shape with jacobian (unnormalized)
-        self.chi_analysis("2s 1D H2 with Jacobian", func_2s_1d_h2_jacobian, decay_constant, max_qubit_count, max_range)
+        func_2s_1d_h2_uncentered = lambda x: (2 - decay_constant*np.abs(x))*np.exp(-decay_constant*np.abs(x)/2)  # 2s orbital shape (unnormalized)
+        self._chi_analysis_1d("2s 1D H2 Uncentered", func_2s_1d_h2_uncentered, max_qubit_count, max_range)
 
-        # func_1s_3d = 
 
-    def chi_analysis_1d(self, function_name, function_1d, decay_constant, max_qubit_count, max_range):
+        func_1s_1d = lambda x: np.exp(-decay_constant*np.abs(x - center_offset))  # 1s orbital shape (unnormalized)
+        self._chi_analysis_1d("1s 1D Orbital", func_1s_1d, max_qubit_count, max_range)
+
+        func_2s_1d_sto = lambda x: np.abs(x-center_offset)*np.exp(-decay_constant*np.abs(x - center_offset))  # 2s orbital shape (unnormalized)
+        self._chi_analysis_1d("2s 1D STO", func_2s_1d_sto, max_qubit_count, max_range)
+
+        func_2s_1d_h2 = lambda x: (2 - decay_constant*np.abs(x-center_offset))*np.exp(-decay_constant*np.abs(x-center_offset)/2)  # 2s orbital shape (unnormalized)
+        self._chi_analysis_1d("2s 1D H2", func_2s_1d_h2, max_qubit_count, max_range)
+
+        func_2s_1d_h2_jacobian = lambda x: x*(2 - decay_constant*x)*np.exp(-decay_constant*x/2)  # 2s orbital shape with jacobian (unnormalized)
+        self._chi_analysis_1d("2s 1D H2 with Jacobian", func_2s_1d_h2_jacobian, max_qubit_count, max_range)
+        
+        potential_offset = center_offset + 1.4
+        def potential_times_s1(x):
+            s1 = np.exp(-decay_constant * np.abs(x - center_offset))
+            V = 1 / np.abs(x - potential_offset)
+            f = V * s1
+            return f
+        self._chi_analysis_1d("1s 1D Orbital times Coulomb potential", potential_times_s1, max_qubit_count, max_range)
+
+    def _chi_analysis_1d(self, function_name, function_1d, max_qubit_count, max_range):
         print()
-        print(f"############# {function_name} #############")
+        print(f"############# {function_name}        Range={max_range} #############")
+        print(f"{'Space range [a.u.]':>15s}  {'qubit count':>15s}  {'max χ':>6s}")
+        print("─" * 50)
 
         for n in range(2, max_qubit_count + 1):
-            scale = (2 ** n) / max_range
-            scaled_decay_constant = decay_constant / scale
-
-            func = lambda x: function_1d(x, scaled_decay_constant)
-
-            max_chi = self.mps.compute_max_bond_dimension(func, n, max_range)
-            print(f"n={n} qubits: max bond dimension = {max_chi}")
+            max_chi = self.mps.compute_max_bond_dimension(function_1d, n, max_range)
+            print(f"{max_range:>15.1f}  {n:>15d}    {max_chi:>6d}")
         print()
 
     def bond_dimension_sensitivity_to_decay_constant(self):
