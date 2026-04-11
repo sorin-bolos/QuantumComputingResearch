@@ -1,4 +1,4 @@
-######### Scaling of bond dimensions with grid resolution; decay constant fixed = 3.0 ############
+######### Scaling of bond dimensions with grid size; decay constant fixed = 3.0 ############
 
  Orbital   qubits per coordonate     3n          grid          max χ    χ(x|y)    time  bond profile
 ──────────────────────────────────────────────────────────────────────────────────────────
@@ -24,31 +24,7 @@
       2S              10             30     1024³ = 1073741824   104       24  3303.43s  [2, 3, 5, 7, 13, 19, 26, 34, 40, 24, 47, 47, 53, 65, 82, 96, 104, 80, 46, 24, 45, 46, 41, 35, 27, 16, 8, 4, 2]
 
 
-######### Scaling of bond dimensions with grid resolution; decay constant scaled to grid (original = 1.0 for n/c=4) ############
 
- Orbital   qubits per coordonate     3n   max χ       time   alpha
-──────────────────────────────────────────────────────────────────────────────────────────
-      1S               2              6      6       0.00s    4.00
-      1S               3              9     10       0.00s    2.00
-      1S               4             12     34       0.01s    1.00
-      1S               5             15     50       0.14s    0.50
-      1S               6             18     77       0.90s    0.25
-      1S               7             21     96       7.35s    0.12
-      1S               8             24    108     119.72s    0.06
-      1S               9             27    117    1124.99s    0.03
-      1S              10             30    124   13311.63s    0.02
-
- Orbital   qubits per coordonate     3n   max χ       time   alpha
-──────────────────────────────────────────────────────────────────────────────────────────
-      2S               2              6      6       0.00s    4.00
-      2S               3              9     10       0.00s    2.00
-      2S               4             12     35       0.01s    1.00
-      2S               5             15     52       0.15s    0.50
-      2S               6             18     79       0.97s    0.25
-      2S               7             21     96       7.61s    0.12
-      2S               8             24    107     113.37s    0.06
-      2S               9             27    116    1157.24s    0.03
-      2S              10             30    122   13384.55s    0.02
 
 
 ######### Scaling of bond dimensions with grid resolution; space range fixed, increasing samples per unit space ############
