@@ -122,6 +122,48 @@ class Experiment:
             stats=stats,
             results=simulation_results
         )
+
+    def run_single_s1_1d_overlap_mps_integral(
+            self,
+            qubit_count: int,
+            decay_constant: float,
+            max_range: int, # the size of the space that will be represented by 2^qubit_count values
+            center_distance: float, # the distance between integral centers
+            shots: int = 1024) -> Results:
+
+        scale = (2 ** qubit_count) / max_range
+        scaled_center_distance = round(center_distance * scale)
+        exact_result = self.integrals.get_1s_1d_overlap_exact_result(decay_constant, center_distance)
+
+        context = IntegralContext(
+            used_center_distance=center_distance,
+            scaled_center_distance=scaled_center_distance,
+            exact_result=exact_result,
+        )
+
+        qc = self.integrals.get_s1_1d_overlap_circuit_mps(qubit_count, decay_constant, center_distance, max_range)
+
+        stats = self._get_circuit_stats(qc)
+        raw_results = self._run_all_methods(qc, qc.num_qubits, shots)
+        
+        simulation_results = []
+        analitical_result = None
+        for run_result in raw_results:
+            if run_result.run_name == "Analytical (statevector)":
+                analitical_result = run_result.run_result
+
+            errors = self._get_errors(context.exact_result, run_result.run_result, analitical_result)
+            simulation_results.append(SimulationResults(
+                name=run_result.run_name,
+                result=run_result.run_result,
+                errors=errors
+            ))
+
+        return Results(
+            context=context,
+            stats=stats,
+            results=simulation_results
+        )
     
     def run_single_s1_1d_kinetic_integral(
             self,

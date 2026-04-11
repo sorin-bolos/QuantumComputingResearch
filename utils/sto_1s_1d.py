@@ -12,6 +12,18 @@ class Sto1S:
         self.allow_measurement = allow_measurement
         self.optimize_t_gates = optimize_t_gates
 
+    def get_sto_1s_1d_carthesian_mps(self, qubit_count: int, decay_constant: float, center_offset: int, max_range: float) -> QuantumCircuit:
+        # Decaying exponential state: |ψ⟩ = N · Σ e^(-a·|i|) |i⟩
+        func_1s_1d = lambda x: np.exp(-decay_constant*np.abs(x - center_offset))
+        
+        mps = Mps()
+        qc = mps.generate_mps_circuit_from_function(func_1s_1d, qubit_count, max_range)
+
+        return qc
+    
+    def get_sto_1s_1d_carthesian_mps_dagger(self, qubit_count: int, decay_constant: float, center_offset: int, max_range: float) -> QuantumCircuit:
+        return self.get_sto_1s_1d_carthesian_mps(qubit_count, decay_constant, center_offset, max_range).inverse()
+
     def get_sto_1s_1d_carthesian(self, qubit_count: int, decay_constant: float, center_offset: int) -> QuantumCircuit:
         # Decaying exponential state: |ψ⟩ = N · Σ e^(-a·|i|) |i⟩
 

@@ -27,6 +27,17 @@ class Integals:
 
         return self.ch.concatenate(s1_1d_1, s1_1d_2)
 
+    def get_s1_1d_overlap_circuit_mps(self, qubit_count, decay_constant, center_distance, max_range):
+        from utils.sto_1s_1d import Sto1S
+
+        mid_range = max_range / 2
+
+        s1_generator = Sto1S(self.allow_measurements, self.optimize_t_gates)
+        s1_1d_1 = s1_generator.get_sto_1s_1d_carthesian_mps(qubit_count, decay_constant, mid_range+center_distance, max_range)
+        s1_1d_2 = s1_generator.get_sto_1s_1d_carthesian_mps_dagger(qubit_count, decay_constant, mid_range, max_range)
+
+        return self.ch.concatenate(s1_1d_1, s1_1d_2)
+
     # Kinetic energy integrals  T₁₂ = <φ₁| -½∇² |φ₂>      
     def get_s1_1d_kinetic_derivative(self, qubit_count, decay_constant, center_distance):
         """Variant 3 – Integration by parts via derivative states.
